@@ -3,6 +3,8 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { getAllPosts, getCategories } from "@/lib/blog";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Blog | Vyom Regency Pvt Ltd - Farmhouse Living & Agriculture Land Guide",
   description:

@@ -5,6 +5,8 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
+export const dynamic = "force-dynamic";
+
 interface TagPageProps {
   params: Promise<{
     tag: string;

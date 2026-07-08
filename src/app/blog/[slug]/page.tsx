@@ -2,6 +2,8 @@ import BlogDetailClient from "./BlogDetailClient";
 import { getPostBySlug } from "@/lib/blog";
 import { notFound } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
 interface BlogPageProps {
   params: Promise<{
     slug: string;
