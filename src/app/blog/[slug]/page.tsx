@@ -1,6 +1,8 @@
 import BlogDetailClient from "./BlogDetailClient";
 import { getPostBySlug } from "@/lib/blog";
 import { notFound } from "next/navigation";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 export const dynamic = "force-dynamic";
 
@@ -34,5 +36,11 @@ export default async function BlogDetailPage({ params }: BlogPageProps) {
     notFound();
   }
 
-  return <BlogDetailClient post={post} />;
+  return (
+    <>
+      <Header />
+      <BlogDetailClient post={post} />
+      <Footer />
+    </>
+  );
 }
