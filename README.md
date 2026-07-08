@@ -35,6 +35,24 @@ A Next.js real estate marketing site for **Vyom Regency**, a premium farmhouse p
 
 **Admin panel** (`/admin/*`, requires login): Dashboard, Leads, Properties, Testimonials, Blog, Media (image uploads), Hero Banner. Changes made here reflect live on the public site immediately — no redeploy needed.
 
+### Screenshots
+
+| Home | Estates |
+|---|---|
+| ![Homepage](docs/screenshots/home.png) | ![Estates listing](docs/screenshots/estates.png) |
+
+| Gallery | Blog |
+|---|---|
+| ![Gallery](docs/screenshots/gallery.png) | ![Blog](docs/screenshots/blog.png) |
+
+| About | Founder |
+|---|---|
+| ![About](docs/screenshots/about.png) | ![Founder](docs/screenshots/founder.png) |
+
+| Contact |
+|---|
+| ![Contact](docs/screenshots/contact.png) |
+
 ## Tech stack
 
 - **Framework:** Next.js 15 (App Router) + React 19 + TypeScript
