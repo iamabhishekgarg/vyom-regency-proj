@@ -1,45 +1,15 @@
-"use client";
+import HomeClient from "./HomeClient";
+import { getPageSeo, buildMetadata } from "@/lib/seo";
 
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import Hero from "@/components/Hero";
-import Benefits from "@/components/Benefits";
-import TrustSignals from "@/components/TrustSignals";
-import NearbyAttractions from "@/components/NearbyAttractions";
-import HappyClients from "@/components/HappyClients";
-import VisitorFeedback from "@/components/VisitorFeedback";
-import LeadForm from "@/components/LeadForm";
-import Projects from "@/components/Projects";
-import IndividualLand from "@/components/IndividualLand";
-import HomeGallery from "@/components/HomeGallery";
-import FAQ from "@/components/FAQ";
-import InvestorSection from "@/components/InvestorSection";
-import ClientComponentsWrapper from "@/components/ClientComponentsWrapper";
+export async function generateMetadata() {
+  const seo = await getPageSeo("home");
+  return buildMetadata(seo, {
+    title: "Vyom Regency Pvt Ltd - Premium Farmhouse Plots in Rajasthan",
+    description:
+      "Vyom Regency offers premium agriculture land and farmhouse plots in Kishangarh Bas, Alwar, Rajasthan. Clear titles, transparent deals since 2017.",
+  });
+}
 
 export default function Home() {
-  return (
-    <>
-      <Header />
-      <main>
-        <Hero />
-        <Benefits />
-        <TrustSignals />
-        <Projects />
-        <IndividualLand />
-        <HomeGallery />
-        <NearbyAttractions />
-        <InvestorSection />
-        <HappyClients />
-        <VisitorFeedback />
-        <section id="lead-form" className="py-16 bg-gray-50">
-          <div className="container mx-auto px-4">
-            <LeadForm />
-          </div>
-        </section>
-        <FAQ />
-      </main>
-      <Footer />
-      <ClientComponentsWrapper />
-    </>
-  );
+  return <HomeClient />;
 }

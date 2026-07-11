@@ -23,8 +23,8 @@ export async function generateMetadata({ params }: BlogPageProps) {
   }
 
   return {
-    title: `${post.title} | Vyom Regency Blog`,
-    description: post.excerpt,
+    title: post.meta_title || `${post.title} | Vyom Regency Blog`,
+    description: post.meta_description || post.excerpt,
   };
 }
 

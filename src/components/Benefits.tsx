@@ -12,7 +12,7 @@ export default function Benefits() {
     {
       id: 2,
       icon: <Wind className="text-2xl" />,
-      title: "Health & Wellness",
+      title: "Retreat/Destination",
       description: "Clean air, natural surroundings, and space for exercise promote better physical and mental health.",
       color: "bg-green-100",
     },

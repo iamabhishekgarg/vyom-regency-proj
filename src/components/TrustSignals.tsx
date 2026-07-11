@@ -9,9 +9,9 @@ export default function TrustSignals() {
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-4">
           Why <span className="text-green-700">Trust Vyom Regency?</span>
         </h2>
-        <p className="text-center text-gray-600 mb-12">100% transparent transactions since 2017</p>
+        <p className="text-center text-gray-600 mb-12">100% transparent since 2017</p>
         
-        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
           {/* Badge 1 */}
           <div className="text-center p-6 bg-green-50 rounded-xl">
             <div className="text-5xl mb-3">🏆</div>
@@ -24,28 +24,40 @@ export default function TrustSignals() {
             <h3 className="font-bold text-xl mb-2">Registry Ready</h3>
             <p className="text-gray-600 text-sm">Clear title with complete documentation</p>
           </div>
-          
+
           {/* Badge 3 */}
           <div className="text-center p-6 bg-green-50 rounded-xl">
             <div className="text-5xl mb-3">⭐</div>
             <h3 className="font-bold text-xl mb-2">100% Satisfaction</h3>
             <p className="text-gray-600 text-sm">No hidden charges, no brokerage</p>
           </div>
+          {/* Badge 4 */}
+          <div className="text-center p-6 bg-green-50 rounded-xl">
+            <div className="text-5xl mb-3">🏞️</div>
+            <h3 className="font-bold text-xl mb-2">Land Delivered</h3>
+            <p className="text-gray-600 text-sm">3 Projects and 50+</p>
+          </div>
         </div>
         
         {/* Google Map */}
-        <div className="mt-12">
-          <h3 className="text-xl font-bold text-center mb-4">📍 Our Location</h3>
-          <div className="rounded-xl overflow-hidden shadow-lg h-96">
-            <iframe 
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d28032.77007992005!2d76.57804515684209!3d27.886629270054527!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3972a2c1618a72a9%3A0xc6bc4a9e3212e76!2sKishangarh%20Bas%2C%20Rajasthan%20301404!5e0!3m2!1sen!2sin!4v1683115640533!5m2!1sen!2sin" 
+        <div className="mt-16">
+          <div className="text-center mb-6">
+            <span className="text-green-600 font-semibold text-sm uppercase tracking-wider">Find Us</span>
+            <h3 className="text-3xl md:text-4xl font-serif font-bold text-gray-800 mt-2">
+              📍 Our <span className="text-green-700">Location</span>
+            </h3>
+            <div className="w-20 h-1 bg-green-600 mx-auto mt-4 rounded-full"></div>
+          </div>
+          <div className="rounded-2xl overflow-hidden shadow-2xl border border-gray-100 h-[28rem] md:h-[32rem]">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d2675.460419269514!2d76.6720993!3d27.7634262!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3972bb53b351fb3d%3A0x8a4d7c408be77208!2sVyom%20Regency%20Pvt.%20Ltd.!5e1!3m2!1sen!2sin!4v1783754650584!5m2!1sen!2sin"
               className="w-full h-full"
               allowFullScreen
               loading="lazy"
               title="Vyom Regency Location"
             ></iframe>
           </div>
-          <p className="text-center text-gray-500 text-sm mt-2">
+          <p className="text-center text-gray-500 text-sm mt-4">
             Kishangarh Bas, Khairthal-Tijara District, Rajasthan | 2 hours from Delhi NCR
           </p>
         </div>

@@ -15,8 +15,10 @@ import {
   LogOut,
   Menu,
   X,
+  Search,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getCurrentAdminRole, type AdminRole } from "@/lib/admin";
 
 const menuItems = [
   { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
@@ -26,11 +28,13 @@ const menuItems = [
   { name: "Blog", href: "/admin/blog", icon: FileText },
   { name: "Media", href: "/admin/media", icon: Images },
   { name: "Hero Banner", href: "/admin/hero-management", icon: FileText },
+  { name: "SEO Settings", href: "/admin/seo", icon: Search },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [adminRole, setAdminRole] = useState<AdminRole>("editor");
   const [authChecked, setAuthChecked] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
@@ -45,6 +49,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       }
       setUserEmail(data.user?.email || null);
       setAuthChecked(true);
+      getCurrentAdminRole().then(setAdminRole);
     };
     getUser();
 
@@ -113,12 +118,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-800">
           <div className="flex items-center gap-3 mb-3 px-2">
-            <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
-              <span className="text-sm font-bold">A</span>
+            <div className="w-8 h-8 shrink-0 bg-green-600 rounded-full flex items-center justify-center">
+              <span className="text-sm font-bold leading-none">A</span>
             </div>
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
               <p className="text-sm font-medium truncate">{userEmail || "Admin"}</p>
-              <p className="text-xs text-gray-400">Administrator</p>
+              <p className="text-xs text-gray-400 capitalize">{adminRole}</p>
             </div>
           </div>
           <button

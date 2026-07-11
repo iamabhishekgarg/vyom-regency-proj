@@ -2,57 +2,130 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
+const FALLBACK_SLIDES = [
+  {
+    label: "Sunrise",
+    url: "https://images.unsplash.com/photo-1495107334309-fcf20504a5ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=2074&q=80",
+  },
+  {
+    label: "Luxury Farmhouse",
+    url: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2074&q=80",
+  },
+  {
+    label: "Kids Playing",
+    url: "https://images.unsplash.com/photo-1476234251651-f353703a034d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2074&q=80",
+  },
+  {
+    label: "Bonfire",
+    url: "https://images.unsplash.com/photo-1475503572774-15a45e5d60b9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2074&q=80",
+  },
+  {
+    label: "Organic Farming",
+    url: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=2074&q=80",
+  },
+  {
+    label: "Aravali Views",
+    url: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2074&q=80",
+  },
+  {
+    label: "Walking Trail",
+    url: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2074&q=80",
+  },
+];
+
+const SLIDE_DURATION_MS = 5000;
+
 export default function Hero() {
-  const [bgImage, setBgImage] = useState(
-    "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?ixlib=rb-4.0.3&auto=format&fit=crop&w=2074&q=80"
-  );
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [slides, setSlides] = useState(FALLBACK_SLIDES);
 
   useEffect(() => {
-    const fetchHeroImage = async () => {
-      try {
-        const { data: settingsData, error: settingsError } = await supabase
-          .from("site_settings")
-          .select("hero_image_key")
-          .single();
+    const fetchSlides = async () => {
+      const { data } = await supabase
+        .from("hero_slides")
+        .select("*")
+        .order("sort_order", { ascending: true });
 
-        if (!settingsError && settingsData?.hero_image_key) {
-          const {
-            data: { publicUrl },
-          } = supabase.storage
-            .from("hero-banners")
-            .getPublicUrl(settingsData.hero_image_key);
-          setBgImage(publicUrl);
-        }
-      } catch (error) {
-        console.log("Using default hero image");
+      if (data && data.length > 0) {
+        setSlides(data.map((s) => ({ label: s.label || `slide-${s.id}`, url: s.image_url })));
+        setActiveSlide(0);
       }
     };
-    fetchHeroImage();
+    fetchSlides();
   }, []);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveSlide((prev) => (prev + 1) % slides.length);
+    }, SLIDE_DURATION_MS);
+    return () => clearInterval(interval);
+  }, [slides.length]);
+
+  const prevSlide = () => {
+    setActiveSlide((prev) => (prev - 1 + slides.length) % slides.length);
+  };
+
+  const nextSlide = () => {
+    setActiveSlide((prev) => (prev + 1) % slides.length);
+  };
+
   return (
-    <section
-      className="relative min-h-screen flex items-center justify-center bg-cover bg-center pt-16"
-      style={{
-        backgroundImage: `linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.6)), url('${bgImage}')`,
-      }}
-    >
+    <section className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden">
+      {/* Image slider layer — rotates automatically, independent of the text layer below */}
+      <div className="absolute inset-0 z-0">
+        {slides.map((slide, i) => (
+          <div
+            key={slide.label}
+            className="absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ease-in-out"
+            style={{
+              backgroundImage: `linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.6)), url('${slide.url}')`,
+              opacity: i === activeSlide ? 1 : 0,
+            }}
+            aria-hidden={i !== activeSlide}
+          />
+        ))}
+      </div>
+
+      <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-between px-4 md:px-8">
+        <button
+          type="button"
+          onClick={prevSlide}
+          className="pointer-events-auto rounded-full bg-black/40 text-white p-3 shadow-lg transition hover:bg-black/60"
+          aria-label="Previous slide"
+        >
+          <ArrowLeft size={20} />
+        </button>
+
+        <button
+          type="button"
+          onClick={nextSlide}
+          className="pointer-events-auto rounded-full bg-black/40 text-white p-3 shadow-lg transition hover:bg-black/60"
+          aria-label="Next slide"
+        >
+          <ArrowRight size={20} />
+        </button>
+      </div>
+
+      {/* Text + CTA layer — stays fixed on screen, unaffected by the slider */}
       <div className="container mx-auto px-4 text-center text-white max-w-5xl mx-auto z-10 relative">
         {/* Urgency Badge */}
         <div className="inline-block bg-red-600 text-white px-4 py-2 rounded-full text-sm font-bold mb-6 animate-pulse">
-          🔥 Only 4 Plots Left at Vyom Green Paradise
+          Hurry Price Revising Soon
         </div>
 
-        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold font-serif leading-tight mb-4">
-          2 Hours from <span className="text-amber-400">Delhi NCR</span> <br />
-          Premium Farmhouse Plots
+        <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold font-serif leading-tight mb-3">
+          Own Your Dream Farmhouse in the Heart of
+          <span className="text-amber-400"> Aravali Hills</span>
         </h1>
-
-        <p className="text-xl md:text-2xl mb-8 max-w-2xl mx-auto">
-          Own your weekend farmhouse in Kishangarh Bas, Alwar. Clear title,
-          water, electricity, security — everything included.
+        <h2 className="text-lg md:text-2xl lg:text-3xl font-semibold leading-snug mb-4 text-white/90">
+          2 Hrs Drive from Delhi NCR in Kishangarh Bas, Alwar
+        </h2>
+        <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto">
+          Premium Farmhouse Plots | Registry Available | Gated Community | High
+          Investment Growth
         </p>
 
         {/* CTA Buttons */}
@@ -64,9 +137,6 @@ export default function Hero() {
             >
               📅 Schedule Site Visit
             </Link>
-            <p className="text-white/70 text-sm mt-2">
-              By Appointment Only • Limited Slots Available
-            </p>
           </div>
           <a
             href="tel:+918955311031"
@@ -81,12 +151,16 @@ export default function Hero() {
           {[
             { icon: "✅", text: "Registry Ready" },
             { icon: "🏛️", text: "Clear Title" },
-            { icon: "🛣️", text: "30ft Road" },
-            { icon: "💧", text: "24x7 Water" },
+            { icon: "🛣️", text: "Gravel Road" },
+            { icon: "💧", text: "water Connection" },
+           { icon: "🌬️", text: "Pollution Free zone" },
             { icon: "⚡️", text: "Electricity" },
-            { icon: "🛡️", text: "Gated Security" },
+            { icon: "🛡️", text: "Gated community" },
           ].map((item, i) => (
-            <div key={i} className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
+            <div
+              key={i}
+              className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full"
+            >
               <span>{item.icon}</span>
               <span className="text-sm">{item.text}</span>
             </div>
@@ -96,9 +170,8 @@ export default function Hero() {
         {/* Price Indicator */}
         <div className="mt-8 bg-white/10 backdrop-blur-sm inline-block px-6 py-3 rounded-full">
           <p className="text-sm">
-            💰 Prices starting from{" "}
-            <span className="text-amber-300 font-bold text-xl">₹50 Lakhs</span>{" "}
-            (1350 sq yd)
+            Area starts from {" "}
+            <span className="text-amber-300 font-bold text-xl">1250 sq yard</span>{" "}
           </p>
         </div>
       </div>

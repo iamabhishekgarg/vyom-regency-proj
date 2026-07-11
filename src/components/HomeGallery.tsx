@@ -8,6 +8,7 @@ import Link from "next/link";
 interface GalleryImage {
   url: string;
   name: string;
+  type: "photo" | "video";
 }
 
 export default function HomeGallery() {
@@ -28,17 +29,29 @@ export default function HomeGallery() {
 
       if (error) throw error;
 
-      if (data && data.length > 0) {
-        const imageList = data
-          .filter(item => item.name !== '.emptyFolderPlaceholder')
-          .map((item) => ({
-            name: item.name,
-            url: supabase.storage
-              .from("gallery")
-              .getPublicUrl(`gallery/${item.name}`).data.publicUrl,
-          }));
-        setImages(imageList);
-      }
+      const photoList: GalleryImage[] = (data || [])
+        .filter((item) => item.name !== ".emptyFolderPlaceholder")
+        .map((item) => ({
+          name: item.name,
+          type: "photo" as const,
+          url: supabase.storage
+            .from("gallery")
+            .getPublicUrl(`gallery/${item.name}`).data.publicUrl,
+        }));
+
+      const { data: videoRows } = await supabase
+        .from("gallery")
+        .select("*")
+        .eq("media_type", "video")
+        .order("created_at", { ascending: false });
+
+      const videoList: GalleryImage[] = (videoRows || []).map((row) => ({
+        name: `video-${row.id}`,
+        type: "video" as const,
+        url: row.url,
+      }));
+
+      setImages([...videoList, ...photoList]);
     } catch (error) {
       console.error("Error fetching gallery:", error);
     } finally {
@@ -111,7 +124,7 @@ export default function HomeGallery() {
               Our Gallery
             </span>
             <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-800 mt-2 mb-3">
-              Glimpses of <span className="text-amber-600">Paradise</span>
+              Glimpses or <span className="text-amber-600">Project</span>
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto text-sm md:text-base">
               Real images from our farmhouse projects — experience the beauty of nature
@@ -126,12 +139,16 @@ export default function HomeGallery() {
                 onClick={() => openLightbox(index)}
                 className="group relative aspect-square rounded-2xl overflow-hidden cursor-pointer shadow-md hover:shadow-2xl transition-all duration-500"
               >
-                <img
-                  src={image.url}
-                  alt={`Farmhouse gallery ${index + 1}`}
-                  className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
-                  loading="lazy"
-                />
+                {image.type === "video" ? (
+                  <iframe src={image.url} className="w-full h-full pointer-events-none" title="Gallery video" />
+                ) : (
+                  <img
+                    src={image.url}
+                    alt={`Farmhouse gallery ${index + 1}`}
+                    className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
+                    loading="lazy"
+                  />
+                )}
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center">
                   <div className="bg-white/20 backdrop-blur-md p-3 rounded-full transform translate-y-4 group-hover:translate-y-0 transition duration-300">
                     <Maximize2 className="text-white" size={24} />
@@ -188,12 +205,18 @@ export default function HomeGallery() {
           </button>
 
           <div className="relative max-w-5xl w-full h-full flex items-center justify-center">
-            <img
-              src={selectedImage.url}
-              alt="Gallery full view"
-              className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl"
-              onClick={(e) => e.stopPropagation()}
-            />
+            {selectedImage.type === "video" ? (
+              <div className="w-full aspect-video max-h-[85vh]" onClick={(e) => e.stopPropagation()}>
+                <iframe src={selectedImage.url} className="w-full h-full rounded-lg shadow-2xl" title="Gallery video" allowFullScreen />
+              </div>
+            ) : (
+              <img
+                src={selectedImage.url}
+                alt="Gallery full view"
+                className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl"
+                onClick={(e) => e.stopPropagation()}
+              />
+            )}
             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 text-white text-sm bg-black/50 px-4 py-2 rounded-full backdrop-blur-md mb-4">
               {currentIndex + 1} / {images.length}
             </div>

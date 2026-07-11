@@ -1,9 +1,14 @@
 import FounderClient from "./FounderClient";
+import { getPageSeo, buildMetadata } from "@/lib/seo";
 
-export const metadata = {
-  title: "Founder | Mr. Sobaran Singh - Ex-NSG Commando | Vyom Regency Pvt Ltd",
-  description: "Meet Mr. Sobaran Singh, Founder of Vyom Regency Pvt Ltd. An Ex-NSG Commando with decades of experience in real estate and land development across UP, Uttarakhand & Rajasthan.",
-};
+export async function generateMetadata() {
+  const seo = await getPageSeo("founder");
+  return buildMetadata(seo, {
+    title: "Founder | Mr. Sobaran Singh - Ex-NSG Commando | Vyom Regency Pvt Ltd",
+    description:
+      "Meet Mr. Sobaran Singh, Founder of Vyom Regency Pvt Ltd. An Ex-NSG Commando with decades of experience in real estate and land development across UP, Uttarakhand & Rajasthan.",
+  });
+}
 
 export default function FounderPage() {
   return <FounderClient />;

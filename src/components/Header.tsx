@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Menu, X, Phone } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -26,14 +27,15 @@ export default function Header() {
       )}
     >
       <nav className="container mx-auto px-4 flex h-16 items-center justify-between">
-        <Link href="/" className="flex flex-col group" onClick={closeMenu}>
-          <span className="text-xl md:text-2xl font-bold leading-tight">
-            <span className="text-green-700">Vyom</span>
-            <span className="text-amber-600"> Regency</span>
-          </span>
-          <span className="text-[10px] md:text-xs text-gray-500 font-medium">
-            Pvt Ltd | Est. 2017
-          </span>
+        <Link href="/" className="flex items-center" onClick={closeMenu}>
+          <Image
+            src="/vyom-regency-logo.jpg"
+            alt="Vyom Regency Pvt Ltd - Your Gateway to Nature"
+            width={1717}
+            height={259}
+            priority
+            className="h-9 md:h-11 w-auto"
+          />
         </Link>
 
         {/* Desktop navigation */}

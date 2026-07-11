@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "@/integrations/supabase/client";
 import Link from "next/link";
 import { MapPin, CheckCircle, Clock, Ban, Crown } from "lucide-react";
+
+const stripHtml = (html: string) => html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 
 interface Property {
   id: string;
@@ -150,7 +152,7 @@ export default function EstatesPage() {
                         <p className="font-bold text-gray-800 text-xs">{land.price}</p>
                       </div>
                     </div>
-                    <p className="text-gray-600 text-xs mb-3 line-clamp-2">{land.description}</p>
+                    <p className="text-gray-600 text-xs mb-3 line-clamp-2">{stripHtml(land.description)}</p>
                     <div className="flex flex-wrap gap-1 mb-3">
                       {land.features?.slice(0, 2).map((feature, idx) => (
                         <span key={idx} className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">{feature}</span>

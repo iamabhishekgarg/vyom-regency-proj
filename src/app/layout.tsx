@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { AuthProvider } from "@/components/AuthProvider";
+import GlobalWhatsAppButton from "@/components/GlobalWhatsAppButton";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -16,6 +17,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className="antialiased" suppressHydrationWarning>
         <AuthProvider>{children}</AuthProvider>
+        <GlobalWhatsAppButton />
       </body>
     </html>
   );

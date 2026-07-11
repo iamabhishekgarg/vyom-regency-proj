@@ -1,25 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
 import Link from "next/link";
 import { MapPin, CheckCircle, Clock, Ban, LayoutGrid, List } from "lucide-react";
+import LeadCaptureModal from "@/components/LeadCaptureModal";
+import { getPropertiesByType, type Property } from "@/lib/properties";
 
-interface Property {
-  id: string;
-  name: string;
-  slug: string;
-  location: string;
-  price: string;
-  size: string;
-  status: string;
-  description: string;
-  features: string[];
-  image_url: string;
-  created_at: string;
-  show_on_home?: boolean;
-  sort_order?: number;
-}
+const stripHtml = (html: string) => html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 
 export default function Projects() {
   const [properties, setProperties] = useState<Property[]>([]);
@@ -33,23 +20,11 @@ export default function Projects() {
   }, []);
 
   const fetchHomeProperties = async () => {
-    const { data } = await supabase
-      .from("properties")
-      .select("*")
-      .eq("show_on_home", true) // ✅ Only show properties marked for home
-      .not("name", "ilike", "%individual%") // Exclude individual lands from this section
-      .order("sort_order", { ascending: true }); // ✅ Respect sort order
-    
-    if (data && data.length > 0) {
-      setProperties(data);
+    const homeData = await getPropertiesByType("project", { homeOnly: true, order: "sort_order" });
+    if (homeData.length > 0) {
+      setProperties(homeData);
     } else {
-      const { data: fallbackData } = await supabase
-        .from("properties")
-        .select("*")
-        .not("name", "ilike", "%individual%")
-        .order("sort_order", { ascending: true });
-
-      setProperties(fallbackData || []);
+      setProperties(await getPropertiesByType("project", { order: "sort_order" }));
     }
     setLoading(false);
   };
@@ -116,6 +91,8 @@ export default function Projects() {
 }
 
 function PropertyCard({ property, viewMode }: { property: Property; viewMode: "grid" | "list" }) {
+  const [showEnquire, setShowEnquire] = useState(false);
+
   const statusBadge = (status: string) => {
     switch (status) {
       case "available": return <span className="bg-green-500 text-white px-3 py-1 rounded-full text-[10px] font-bold shadow-lg">Available</span>;
@@ -124,13 +101,26 @@ function PropertyCard({ property, viewMode }: { property: Property; viewMode: "g
     }
   };
 
+  const enquireModal = (
+    <LeadCaptureModal
+      isOpen={showEnquire}
+      onClose={() => setShowEnquire(false)}
+      title="Enquire Now"
+      subtitle="Share your details and our team will call you shortly."
+      propertyName={property.name}
+      source="property_enquiry"
+      submitLabel="Send Enquiry →"
+    />
+  );
+
   if (viewMode === "list") {
     return (
       <div className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-all border border-gray-100 flex flex-col md:flex-row group">
+        {enquireModal}
         <div className="md:w-1/3 h-64 md:h-auto relative overflow-hidden">
-          <img 
-            src={property.image_url || ""} 
-            alt={property.name} 
+          <img
+            src={property.image_url || ""}
+            alt={property.name}
             className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
           />
           <div className="absolute top-4 left-4">{statusBadge(property.status)}</div>
@@ -147,13 +137,13 @@ function PropertyCard({ property, viewMode }: { property: Property; viewMode: "g
               <span className="mx-2">•</span>
               <span>Size: <strong>{property.size}</strong></span>
             </div>
-            <p className="text-gray-600 text-sm mb-6 line-clamp-2">{property.description}</p>
+            <p className="text-gray-600 text-sm mb-6 line-clamp-2">{stripHtml(property.description)}</p>
           </div>
           <div className="flex gap-4">
-            <Link href="/#lead-form" className="flex-1 bg-green-700 text-white text-center py-3 rounded-xl font-bold text-sm hover:bg-green-800 transition shadow-md">
-              {property.status === "limited" ? "🔴 Book Now →" : "📅 Site Visit →"}
-            </Link>
-            <Link href="/estates" className="px-6 py-3 border-2 border-gray-200 text-gray-600 rounded-xl font-bold text-sm hover:bg-gray-50 transition">Details</Link>
+            <button onClick={() => setShowEnquire(true)} className="flex-1 bg-green-700 text-white text-center py-3 rounded-xl font-bold text-sm hover:bg-green-800 transition shadow-md">
+              Enquire Now
+            </button>
+            <Link href={`/estates/${property.slug}`} className="px-6 py-3 border-2 border-gray-200 text-gray-600 rounded-xl font-bold text-sm hover:bg-gray-50 transition">Explore</Link>
           </div>
         </div>
       </div>
@@ -162,10 +152,11 @@ function PropertyCard({ property, viewMode }: { property: Property; viewMode: "g
 
   return (
     <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 flex flex-col h-full">
+      {enquireModal}
       <div className="relative h-56 overflow-hidden">
-        <img 
-          src={property.image_url || ""} 
-          alt={property.name} 
+        <img
+          src={property.image_url || ""}
+          alt={property.name}
           className="w-full h-full object-cover group-hover:scale-110 transition duration-500"
         />
         <div className="absolute top-4 left-4">{statusBadge(property.status)}</div>
@@ -178,7 +169,7 @@ function PropertyCard({ property, viewMode }: { property: Property; viewMode: "g
         </div>
         <div className="grid grid-cols-2 gap-3 mb-4">
           <div className="bg-green-50 p-2 rounded-lg text-center">
-            <p className="text-xs text-gray-500">Plot Size</p>
+            <p className="text-xs text-gray-500">Area</p>
             <p className="font-bold text-gray-800 text-sm">{property.size}</p>
           </div>
           <div className="bg-amber-50 p-2 rounded-lg text-center">
@@ -186,13 +177,23 @@ function PropertyCard({ property, viewMode }: { property: Property; viewMode: "g
             <p className="font-bold text-gray-800 text-sm">{property.price}</p>
           </div>
         </div>
-        <p className="text-gray-600 text-xs mb-4 line-clamp-2 flex-grow">{property.description}</p>
+        <p className="text-gray-600 text-xs mb-4 line-clamp-2 flex-grow">{stripHtml(property.description)}</p>
         {property.status !== "sold" ? (
-          <Link href="/#lead-form" className="w-full bg-green-700 text-white py-2.5 rounded-xl font-bold text-center text-sm hover:bg-green-800 transition-all mt-auto">
-            {property.status === "limited" ? "🔴 Book Now →" : "📅 Site Visit →"}
-          </Link>
+          <div className="flex gap-2 mt-auto">
+            <button onClick={() => setShowEnquire(true)} className="flex-1 bg-green-700 text-white py-2.5 rounded-xl font-bold text-center text-sm hover:bg-green-800 transition-all">
+              Enquire Now
+            </button>
+            <Link href={`/estates/${property.slug}`} className="flex-1 text-center border-2 border-gray-200 text-gray-600 py-2.5 rounded-xl font-bold text-sm hover:bg-gray-50 transition-all">
+              Explore
+            </Link>
+          </div>
         ) : (
-          <button disabled className="w-full bg-gray-300 text-gray-500 py-2.5 rounded-xl font-bold text-sm cursor-not-allowed mt-auto">Sold Out</button>
+          <div className="flex gap-2 mt-auto">
+            <button disabled className="flex-1 bg-gray-300 text-gray-500 py-2.5 rounded-xl font-bold text-sm cursor-not-allowed">Sold Out</button>
+            <Link href={`/estates/${property.slug}`} className="flex-1 text-center border-2 border-gray-200 text-gray-600 py-2.5 rounded-xl font-bold text-sm hover:bg-gray-50 transition-all">
+              Explore
+            </Link>
+          </div>
         )}
       </div>
     </div>

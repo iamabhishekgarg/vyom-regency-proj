@@ -14,6 +14,9 @@ export interface BlogPost {
   image: string;
   tags: string[];
   featured: boolean;
+  meta_title?: string;
+  meta_description?: string;
+  focus_keyword?: string;
 }
 
 export async function getAllPosts(): Promise<BlogPost[]> {

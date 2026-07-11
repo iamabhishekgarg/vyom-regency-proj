@@ -2,94 +2,105 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Upload, Trash2, Loader2, ArrowLeft } from "lucide-react";
+import { Upload, Trash2, Loader2, ArrowLeft, GripVertical } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+
+interface HeroSlide {
+  id: number;
+  image_url: string;
+  label: string | null;
+  sort_order: number;
+}
 
 export default function HeroManagement() {
   const [isMounted, setIsMounted] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [imageUrl, setImageUrl] = useState("");
-  const [imageName, setImageName] = useState("");
+  const [slides, setSlides] = useState<HeroSlide[]>([]);
   const router = useRouter();
-
-  const templateImages = [
-    {
-      url: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?ixlib=rb-4.0.3&auto=format&fit=crop&w=2074&q=80",
-      name: "default-hero.jpg",
-    },
-    {
-      url: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=2080&q=80",
-      name: "farmhouse-hero.jpg",
-    },
-  ];
 
   useEffect(() => {
     setIsMounted(true);
-    fetchCurrentHero();
+    fetchSlides();
   }, []);
 
-  const fetchCurrentHero = async () => {
+  const fetchSlides = async () => {
     const { data, error } = await supabase
-      .from("site_settings")
-      .select("hero_image_key")
-      .single();
+      .from("hero_slides")
+      .select("*")
+      .order("sort_order", { ascending: true });
 
-    if (!error && data?.hero_image_key) {
-      const { data: { publicUrl } } = supabase.storage
-        .from("hero-banners")
-        .getPublicUrl(data.hero_image_key);
-      setImageUrl(publicUrl);
-      setImageName(data.hero_image_key.split("/").pop() || "hero.jpg");
-    }
+    if (!error) setSlides(data || []);
   };
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
 
     setUploading(true);
     try {
-      const fileName = `${Date.now()}_${file.name}`;
-      const { error } = await supabase.storage
-        .from("hero-banners")
-        .upload(`hero/${fileName}`, file, {
-          cacheControl: "3600",
-          contentType: file.type,
-        });
+      for (const file of Array.from(files)) {
+        const fileName = `${Date.now()}_${file.name}`;
+        const { error: uploadError } = await supabase.storage
+          .from("hero-banners")
+          .upload(`hero/${fileName}`, file, {
+            cacheControl: "3600",
+            contentType: file.type,
+          });
 
-      if (error) throw error;
+        if (uploadError) throw uploadError;
 
-      const { error: updError } = await supabase
-        .from("site_settings")
-        .update({ hero_image_key: `hero/${fileName}` })
-        .eq("id", 1);
+        const { data: { publicUrl } } = supabase.storage
+          .from("hero-banners")
+          .getPublicUrl(`hero/${fileName}`);
 
-      if (updError) throw updError;
+        const nextOrder = slides.length > 0 ? Math.max(...slides.map((s) => s.sort_order)) + 1 : 0;
 
-      toast.success("Hero image updated!");
-      fetchCurrentHero();
-    } catch (err: any) {
+        const { error: insertError } = await supabase.from("hero_slides").insert([{
+          image_url: publicUrl,
+          label: file.name.replace(/\.[^/.]+$/, ""),
+          sort_order: nextOrder,
+        }]);
+
+        if (insertError) throw insertError;
+      }
+
+      toast.success("Hero slide(s) added!");
+      fetchSlides();
+    } catch (err) {
+      console.error(err);
       toast.error("Upload failed");
     } finally {
       setUploading(false);
+      e.target.value = "";
     }
   };
 
-  const handleDelete = async () => {
-    if (!confirm("Delete current hero image?")) return;
-    try {
-      const { data } = await supabase.from("site_settings").select("hero_image_key").single();
-      if (data?.hero_image_key) {
-        await supabase.storage.from("hero-banners").remove([data.hero_image_key]);
-        await supabase.from("site_settings").update({ hero_image_key: null }).match({ id: 1 });
-      }
-      setImageUrl("");
-      setImageName("");
-      toast.success("Deleted");
-    } catch (err) {
+  const handleDelete = async (slide: HeroSlide) => {
+    if (!confirm("Delete this hero slide?")) return;
+    const { error } = await supabase.from("hero_slides").delete().eq("id", slide.id);
+    if (error) {
       toast.error("Delete failed");
+      return;
     }
+    toast.success("Deleted");
+    fetchSlides();
+  };
+
+  const moveSlide = async (index: number, direction: -1 | 1) => {
+    const targetIndex = index + direction;
+    if (targetIndex < 0 || targetIndex >= slides.length) return;
+
+    const reordered = [...slides];
+    [reordered[index], reordered[targetIndex]] = [reordered[targetIndex], reordered[index]];
+
+    setSlides(reordered);
+
+    await Promise.all(
+      reordered.map((slide, i) =>
+        supabase.from("hero_slides").update({ sort_order: i }).eq("id", slide.id)
+      )
+    );
   };
 
   if (!isMounted) return null;
@@ -101,40 +112,47 @@ export default function HeroManagement() {
           <button onClick={() => router.push("/admin/dashboard")} className="p-2 hover:bg-gray-200 rounded-full">
             <ArrowLeft size={24} />
           </button>
-          <h1 className="text-2xl font-bold">Hero Banner Management</h1>
+          <div>
+            <h1 className="text-2xl font-bold">Hero Banner Slider</h1>
+            <p className="text-sm text-gray-500">Manage the rotating images shown on the homepage hero.</p>
+          </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden mb-6 border">
-          <div className="aspect-video relative bg-gray-100 flex items-center justify-center">
-            {imageUrl ? (
-              <img src={imageUrl} alt="Hero" className="w-full h-full object-cover" />
-            ) : (
-              <p className="text-gray-400">No Hero Image Set</p>
-            )}
-            {uploading && (
-              <div className="absolute inset-0 bg-black/50 flex items-center justify-center text-white">
-                <Loader2 className="animate-spin mr-2" /> Uploading...
-              </div>
-            )}
-          </div>
-          <div className="p-6 flex justify-between items-center bg-gray-50">
-            <div>
-              <p className="text-sm font-bold text-gray-700">{imageName || "Default"}</p>
-              <p className="text-xs text-gray-500">Main homepage background banner</p>
+        <div className="bg-white rounded-2xl border-2 border-dashed border-gray-200 p-8 mb-8 text-center hover:border-green-500 transition">
+          <label className="cursor-pointer flex flex-col items-center">
+            <input type="file" multiple accept="image/*" className="hidden" onChange={handleUpload} disabled={uploading} />
+            <div className="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mb-3">
+              {uploading ? <Loader2 className="animate-spin text-green-700" /> : <Upload className="text-green-700" />}
             </div>
-            <div className="flex gap-3">
-              <label className="bg-green-700 text-white px-4 py-2 rounded-lg font-bold cursor-pointer hover:bg-green-800 transition">
-                <Upload size={18} className="inline mr-2" /> Change Image
-                <input type="file" className="hidden" onChange={handleUpload} accept="image/*" />
-              </label>
-              {imageUrl && (
-                <button onClick={handleDelete} className="bg-red-50 text-red-600 p-2 rounded-lg hover:bg-red-100">
-                  <Trash2 size={20} />
-                </button>
-              )}
-            </div>
-          </div>
+            <p className="font-semibold text-gray-700">{uploading ? "Uploading..." : "Click to add slide images"}</p>
+            <p className="text-xs text-gray-400 mt-1">You can select multiple images at once</p>
+          </label>
         </div>
+
+        {slides.length === 0 ? (
+          <div className="text-center py-16 bg-white rounded-2xl border border-dashed border-gray-200 text-gray-400">
+            No hero slides yet — the homepage will show default placeholder images until you add some.
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {slides.map((slide, index) => (
+              <div key={slide.id} className="bg-white rounded-xl shadow-sm border flex items-center gap-4 p-3">
+                <div className="flex flex-col gap-1 text-gray-400">
+                  <button onClick={() => moveSlide(index, -1)} disabled={index === 0} className="disabled:opacity-20 hover:text-gray-700">▲</button>
+                  <button onClick={() => moveSlide(index, 1)} disabled={index === slides.length - 1} className="disabled:opacity-20 hover:text-gray-700">▼</button>
+                </div>
+                <img src={slide.image_url} alt={slide.label || ""} className="w-24 h-16 object-cover rounded-lg" />
+                <div className="flex-1">
+                  <p className="font-semibold text-gray-700 text-sm">{slide.label || "Untitled slide"}</p>
+                  <p className="text-xs text-gray-400">Order: {index + 1}</p>
+                </div>
+                <button onClick={() => handleDelete(slide)} className="bg-red-50 text-red-600 p-2 rounded-lg hover:bg-red-100">
+                  <Trash2 size={18} />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

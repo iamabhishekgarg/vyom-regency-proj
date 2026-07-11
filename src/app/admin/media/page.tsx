@@ -9,15 +9,29 @@ import {
 } from "@/lib/imageUpload";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Upload, Trash2, Image as ImageIcon, Loader2, Copy, Check, ArrowLeft } from "lucide-react";
+import { Upload, Trash2, Image as ImageIcon, Loader2, Copy, Check, ArrowLeft, Youtube, Plus } from "lucide-react";
 import Link from "next/link";
+
+function extractYouTubeId(url: string): string | null {
+  const match = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  return match ? match[1] : null;
+}
+
+interface GalleryVideo {
+  id: number;
+  url: string;
+  caption: string | null;
+}
 
 export default function MediaGallery() {
   const [images, setImages] = useState<any[]>([]);
+  const [videos, setVideos] = useState<GalleryVideo[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("gallery");
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [youtubeUrl, setYoutubeUrl] = useState("");
+  const [addingVideo, setAddingVideo] = useState(false);
 
   const categories = [
     { id: "hero", label: "Hero Banners", bucket: "hero-banners" }, // New Category
@@ -36,7 +50,55 @@ export default function MediaGallery() {
     const bucket = categories.find(c => c.id === selectedCategory)?.bucket || "gallery";
     const imagesList = await getGalleryImages(bucket, selectedCategory);
     setImages(imagesList);
+
+    if (selectedCategory === "gallery") {
+      const { data } = await supabase
+        .from("gallery")
+        .select("*")
+        .eq("media_type", "video")
+        .order("created_at", { ascending: false });
+      setVideos(data || []);
+    } else {
+      setVideos([]);
+    }
+
     setLoading(false);
+  };
+
+  const handleAddVideo = async () => {
+    const videoId = extractYouTubeId(youtubeUrl.trim());
+    if (!videoId) {
+      toast.error("Enter a valid YouTube link");
+      return;
+    }
+
+    setAddingVideo(true);
+    const { error } = await supabase.from("gallery").insert([{
+      url: `https://www.youtube.com/embed/${videoId}`,
+      caption: null,
+      media_type: "video",
+    }]);
+    setAddingVideo(false);
+
+    if (error) {
+      toast.error("Failed to add video");
+      return;
+    }
+
+    toast.success("Video added!");
+    setYoutubeUrl("");
+    fetchImages();
+  };
+
+  const handleDeleteVideo = async (id: number) => {
+    if (!confirm("Delete this video?")) return;
+    const { error } = await supabase.from("gallery").delete().eq("id", id);
+    if (error) {
+      toast.error("Delete failed");
+      return;
+    }
+    toast.success("Deleted");
+    fetchImages();
   };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -168,6 +230,54 @@ export default function MediaGallery() {
             <p className="text-sm text-gray-400 mt-1">PNG, JPG, WebP supported • Auto-compressed</p>
           </label>
         </div>
+
+        {selectedCategory === "gallery" && (
+          <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-8">
+            <div className="flex items-center gap-2 mb-3">
+              <Youtube className="text-red-600" size={20} />
+              <h3 className="font-semibold text-gray-700">Add YouTube Video</h3>
+            </div>
+            <div className="flex gap-3">
+              <input
+                type="text"
+                value={youtubeUrl}
+                onChange={(e) => setYoutubeUrl(e.target.value)}
+                placeholder="Paste YouTube link (e.g. https://www.youtube.com/watch?v=...)"
+                className="flex-1 px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-emerald-500"
+              />
+              <button
+                onClick={handleAddVideo}
+                disabled={addingVideo}
+                className="px-5 py-2.5 bg-emerald-700 text-white rounded-lg font-semibold hover:bg-emerald-800 transition disabled:opacity-50 flex items-center gap-2"
+              >
+                <Plus size={16} /> {addingVideo ? "Adding..." : "Add Video"}
+              </button>
+            </div>
+
+            {videos.length > 0 && (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
+                {videos.map((video) => (
+                  <div key={video.id} className="bg-gray-50 rounded-xl overflow-hidden border group relative">
+                    <div className="aspect-video">
+                      <iframe
+                        src={video.url}
+                        className="w-full h-full"
+                        title="Gallery video"
+                        allowFullScreen
+                      />
+                    </div>
+                    <button
+                      onClick={() => handleDeleteVideo(video.id)}
+                      className="absolute top-2 right-2 bg-red-600 text-white p-2 rounded-lg opacity-0 group-hover:opacity-100 transition"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         {loading ? (
           <div className="text-center py-20"><Loader2 className="animate-spin mx-auto mb-2" /> Loading...</div>
