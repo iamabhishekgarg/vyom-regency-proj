@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Handshake } from "lucide-react";
 
 export default function TrustSignals() {
   return (
@@ -14,28 +15,36 @@ export default function TrustSignals() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
           {/* Badge 1 */}
           <div className="text-center p-6 bg-green-50 rounded-xl">
-            <div className="text-5xl mb-3">🏆</div>
+            <div className="h-12 flex items-center justify-center mb-3">
+              <span className="text-5xl leading-none">🏆</span>
+            </div>
             <h3 className="font-bold text-xl mb-2">50+ Families Served</h3>
             <p className="text-gray-600 text-sm">Successfully delivered land parcels</p>
           </div>
-                    {/* Badge 2 */}
+          {/* Badge 2 */}
           <div className="text-center p-6 bg-green-50 rounded-xl">
-            <div className="text-5xl mb-3">📝</div>
+            <div className="h-12 flex items-center justify-center mb-3">
+              <span className="text-5xl leading-none">📝</span>
+            </div>
             <h3 className="font-bold text-xl mb-2">Registry Ready</h3>
             <p className="text-gray-600 text-sm">Clear title with complete documentation</p>
           </div>
 
           {/* Badge 3 */}
           <div className="text-center p-6 bg-green-50 rounded-xl">
-            <div className="text-5xl mb-3">⭐</div>
+            <div className="h-12 flex items-center justify-center mb-3">
+              <span className="text-5xl leading-none">⭐</span>
+            </div>
             <h3 className="font-bold text-xl mb-2">100% Satisfaction</h3>
             <p className="text-gray-600 text-sm">No hidden charges, no brokerage</p>
           </div>
           {/* Badge 4 */}
           <div className="text-center p-6 bg-green-50 rounded-xl">
-            <div className="text-5xl mb-3">🏞️</div>
-            <h3 className="font-bold text-xl mb-2">Land Delivered</h3>
-            <p className="text-gray-600 text-sm">3 Projects and 50+</p>
+            <div className="h-12 flex items-center justify-center mb-3">
+              <Handshake className="h-12 w-12 text-green-600" strokeWidth={1.75} />
+            </div>
+            <h3 className="font-bold text-xl mb-2">Delivered</h3>
+            <p className="text-gray-600 text-sm">3 Projects & 50+ Land Pieces</p>
           </div>
         </div>
         

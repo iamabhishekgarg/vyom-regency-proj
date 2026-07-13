@@ -133,17 +133,19 @@ export default function Hero() {
           <div className="flex flex-col items-center">
             <Link
               href="#lead-form"
-              className="bg-amber-500 text-gray-900 px-8 py-4 rounded-full text-lg font-bold hover:bg-amber-400 transition inline-flex items-center gap-2 shadow-xl"
+              className="bg-amber-500 text-gray-900 px-8 py-4 rounded-full text-lg font-bold hover:bg-white transition inline-flex items-center gap-2 shadow-xl"
             >
               📅 Schedule Site Visit
             </Link>
           </div>
-          <a
-            href="tel:+918955311031"
-            className="border-2 border-white text-white px-8 py-4 rounded-full text-lg font-bold hover:bg-white hover:text-gray-900 transition inline-flex items-center gap-2"
-          >
-            📞 Call Now
-          </a>
+          <div className="flex flex-col items-center">
+            <Link
+              href="tel:+918955311031"
+              className="bg-amber-500 text-gray-900 px-8 py-4 rounded-full text-lg font-bold hover:bg-white transition inline-flex items-center gap-2 shadow-xl"
+            >
+              📞 Call Now
+            </Link>
+          </div>
         </div>
 
         {/* Trust Badges */}
@@ -156,6 +158,7 @@ export default function Hero() {
            { icon: "🌬️", text: "Pollution Free zone" },
             { icon: "⚡️", text: "Electricity" },
             { icon: "🛡️", text: "Gated community" },
+            { icon: "🔒", text: "24*7 Security" },
           ].map((item, i) => (
             <div
               key={i}
