@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { SOCIAL_PLATFORM_LINKS } from "@/components/SocialSidebar";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -19,9 +20,26 @@ export default function Footer() {
               <span className="text-amber-400"> Regency</span>
             </h3>
             <p className="text-gray-400 text-sm mb-3">Pvt Ltd | Est. 2017</p>
-            <p className="text-gray-500 text-xs leading-relaxed">
+            <p className="text-gray-500 text-xs leading-relaxed mb-4">
               Premium agriculture land and farmhouse plots in Rajasthan.
             </p>
+            <div className="flex items-center gap-2">
+              {SOCIAL_PLATFORM_LINKS.map((social) => {
+                const Icon = social.icon;
+                return (
+                  <a
+                    key={social.name}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={social.name}
+                    className={`${social.bg} text-white w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 hover:brightness-110 transition`}
+                  >
+                    <Icon size={14} />
+                  </a>
+                );
+              })}
+            </div>
           </div>
 
           {/* Column 2: Quick Links */}
