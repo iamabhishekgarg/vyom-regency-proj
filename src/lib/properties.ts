@@ -78,6 +78,20 @@ export async function getPropertiesByType(
   return data || [];
 }
 
+export async function getLatestProperties(limit = 4): Promise<Property[]> {
+  const { data, error } = await supabase
+    .from("properties")
+    .select(ALL_COLUMNS)
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    console.error("Error fetching latest properties:", error);
+    return [];
+  }
+  return data || [];
+}
+
 export async function getRecentProperties(excludeId: string, limit = 4): Promise<Property[]> {
   const { data, error } = await supabase
     .from("properties")

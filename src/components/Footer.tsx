@@ -1,10 +1,23 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { SOCIAL_PLATFORM_LINKS } from "@/components/SocialSidebar";
+import { getLatestProperties, type Property } from "@/lib/properties";
+
+const STATUS_LABELS: Record<string, { label: string; color: string }> = {
+  available: { label: "Available", color: "text-green-400" },
+  limited: { label: "Limited", color: "text-amber-400" },
+  sold: { label: "Sold Out", color: "text-gray-500" },
+};
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const [latestProjects, setLatestProjects] = useState<Property[]>([]);
+
+  useEffect(() => {
+    getLatestProperties(4).then(setLatestProjects);
+  }, []);
 
   return (
     <footer className="bg-gray-900 text-white pt-12 pb-6">
@@ -67,10 +80,16 @@ export default function Footer() {
           <div>
             <h4 className="text-md font-semibold text-gray-300 mb-3">Our Projects</h4>
             <ul className="space-y-1.5">
-              <li className="text-gray-500 text-sm">Vyom Green Paradise <span className="text-red-400 text-xs ml-1">(2 left)</span></li>
-              <li className="text-gray-500 text-sm">Individual Premium Land <span className="text-green-400 text-xs ml-1">Available</span></li>
-              <li className="text-gray-500 text-sm">Vyom Green Valley <span className="text-gray-500 text-xs ml-1">Sold Out</span></li>
-              <li className="text-gray-500 text-sm">Vyom Chhatarpur Farms <span className="text-gray-500 text-xs ml-1">Sold Out</span></li>
+              {latestProjects.map((project) => {
+                const status = STATUS_LABELS[project.status] || { label: project.status, color: "text-gray-500" };
+                return (
+                  <li key={project.id}>
+                    <Link href={`/estates/${project.slug}`} className="text-gray-500 hover:text-green-400 text-sm transition">
+                      {project.name} <span className={`${status.color} text-xs ml-1`}>{status.label}</span>
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </div>
 
