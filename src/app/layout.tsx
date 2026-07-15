@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { AuthProvider } from "@/components/AuthProvider";
 import GlobalWhatsAppButton from "@/components/GlobalWhatsAppButton";
+import SocialSidebar from "@/components/SocialSidebar";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
@@ -19,6 +20,7 @@ export default function RootLayout({
       <body className="antialiased" suppressHydrationWarning>
         <AuthProvider>{children}</AuthProvider>
         <GlobalWhatsAppButton />
+        <SocialSidebar />
         <Toaster richColors position="top-center" />
       </body>
     </html>
