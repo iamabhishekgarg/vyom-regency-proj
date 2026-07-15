@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { Upload, X, Youtube, PlayCircle, Plus } from "lucide-react";
-import { isGalleryVideoUrl, type PropertyFormData } from "@/lib/propertyUtils";
+import { toast } from "sonner";
+import { isGalleryVideoUrl, extractYouTubeId, type PropertyFormData } from "@/lib/propertyUtils";
 
 interface MediaTabProps {
   formData: PropertyFormData;
@@ -24,8 +26,55 @@ export default function MediaTab({
   onGalleryUpload,
   onAddGalleryVideo,
 }: MediaTabProps) {
+  const [videoInput, setVideoInput] = useState("");
+
+  const handleSetVideo = () => {
+    const videoId = extractYouTubeId(videoInput.trim());
+    if (!videoId) {
+      toast.error("Enter a valid YouTube link");
+      return;
+    }
+    updateField("video_url", `https://www.youtube.com/embed/${videoId}`);
+    setVideoInput("");
+  };
+
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-6">
+      <div>
+        <label className="block text-sm font-semibold text-gray-700 mb-2">Project Video</label>
+        <p className="text-xs text-gray-400 mb-3">One featured YouTube video shown prominently on the property page</p>
+        {formData.video_url ? (
+          <div className="mb-3 relative w-full max-w-sm aspect-video rounded-xl overflow-hidden border">
+            <iframe src={formData.video_url} title="Project video preview" className="w-full h-full" allowFullScreen />
+            <button
+              type="button"
+              onClick={() => updateField("video_url", "")}
+              className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1.5 shadow hover:bg-red-700 transition"
+            >
+              <X size={14} />
+            </button>
+          </div>
+        ) : (
+          <div className="flex gap-2 items-center">
+            <Youtube className="text-red-500 shrink-0" size={18} />
+            <input
+              type="text"
+              value={videoInput}
+              onChange={(e) => setVideoInput(e.target.value)}
+              placeholder="Paste YouTube link for the project video"
+              className="flex-1 px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
+            />
+            <button
+              type="button"
+              onClick={handleSetVideo}
+              className="shrink-0 flex items-center gap-1 bg-gray-800 text-white px-3 py-2 rounded-lg text-sm font-semibold hover:bg-gray-900 transition"
+            >
+              <Plus size={14} /> Set
+            </button>
+          </div>
+        )}
+      </div>
+
       <div>
         <label className="block text-sm font-semibold text-gray-700 mb-2">Brochure (PDF)</label>
         <p className="text-xs text-gray-400 mb-3">Visitors can download after filling the lead form</p>

@@ -38,7 +38,11 @@ create table if not exists public.properties (
   property_type text default 'project',
   meta_title text,
   meta_description text,
-  focus_keyword text
+  focus_keyword text,
+  video_url text,
+  registry_type text,
+  possession_status text,
+  plots_left integer
 );
 
 alter table public.properties enable row level security;

@@ -13,7 +13,7 @@ export default function Founder() {
         <div className="flex flex-col md:flex-row items-center gap-8 text-left">
           <div className="w-48 h-48 rounded-full overflow-hidden shadow-xl border-4 border-white flex-shrink-0 mx-auto md:mx-0">
             <img 
-              src="https://images.unsplash.com/photo-1582750433449-648ed127bb54?ixlib=rb-4.0.3&auto=format&fit=crop&w=987&q=80" 
+              src="/Founder-img.jpg"
               alt="Mr. Sobaran Singh" 
               className="w-full h-full object-cover"
             />

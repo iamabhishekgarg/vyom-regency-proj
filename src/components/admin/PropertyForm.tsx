@@ -198,6 +198,10 @@ export default function PropertyForm({ mode, propertyId, initialData }: Property
       meta_title: formData.meta_title || null,
       meta_description: formData.meta_description || null,
       focus_keyword: formData.focus_keyword || null,
+      video_url: formData.video_url || null,
+      registry_type: formData.registry_type || null,
+      possession_status: formData.possession_status || null,
+      plots_left: formData.plots_left,
     };
 
     try {

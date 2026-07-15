@@ -118,6 +118,44 @@ export default function BasicDetailsSection({ formData, updateField, uploading, 
         </div>
       </div>
 
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-2">Registry Type</label>
+          <select
+            value={formData.registry_type}
+            onChange={(e) => updateField("registry_type", e.target.value)}
+            className="w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-green-500 outline-none bg-white"
+          >
+            <option value="">Not specified</option>
+            <option value="freehold">Freehold</option>
+            <option value="leasehold">Leasehold</option>
+          </select>
+        </div>
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-2">Possession</label>
+          <select
+            value={formData.possession_status}
+            onChange={(e) => updateField("possession_status", e.target.value)}
+            className="w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-green-500 outline-none bg-white"
+          >
+            <option value="">Not specified</option>
+            <option value="ready">Ready to Move</option>
+            <option value="under_development">Under Development</option>
+          </select>
+        </div>
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-2">Plots Left</label>
+          <input
+            type="number"
+            min={0}
+            value={formData.plots_left ?? ""}
+            onChange={(e) => updateField("plots_left", e.target.value === "" ? null : parseInt(e.target.value) || 0)}
+            placeholder="Leave blank to hide"
+            className="w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-green-500 outline-none"
+          />
+        </div>
+      </div>
+
       <div>
         <label className="block text-sm font-semibold text-gray-700 mb-2">Cover Image</label>
         <p className="text-xs text-gray-400 mb-3">Main image shown on listing cards and detail page hero</p>

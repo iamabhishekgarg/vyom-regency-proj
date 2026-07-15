@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { AuthProvider } from "@/components/AuthProvider";
 import GlobalWhatsAppButton from "@/components/GlobalWhatsAppButton";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -18,6 +19,7 @@ export default function RootLayout({
       <body className="antialiased" suppressHydrationWarning>
         <AuthProvider>{children}</AuthProvider>
         <GlobalWhatsAppButton />
+        <Toaster richColors position="top-center" />
       </body>
     </html>
   );

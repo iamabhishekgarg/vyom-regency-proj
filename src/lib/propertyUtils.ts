@@ -17,6 +17,10 @@ export interface PropertyFormData {
   meta_title: string;
   meta_description: string;
   focus_keyword: string;
+  video_url: string;
+  registry_type: string;
+  possession_status: string;
+  plots_left: number | null;
 }
 
 export const defaultPropertyFormData: PropertyFormData = {
@@ -38,6 +42,10 @@ export const defaultPropertyFormData: PropertyFormData = {
   meta_title: "",
   meta_description: "",
   focus_keyword: "",
+  video_url: "",
+  registry_type: "",
+  possession_status: "",
+  plots_left: null,
 };
 
 export function extractYouTubeId(url: string): string | null {
@@ -96,5 +104,9 @@ export function propertyFormDataFromRecord(property: Record<string, unknown>): P
     meta_title: (property.meta_title as string) || "",
     meta_description: (property.meta_description as string) || "",
     focus_keyword: (property.focus_keyword as string) || "",
+    video_url: (property.video_url as string) || "",
+    registry_type: (property.registry_type as string) || "",
+    possession_status: (property.possession_status as string) || "",
+    plots_left: (property.plots_left as number) ?? null,
   };
 }

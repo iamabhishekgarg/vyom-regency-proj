@@ -55,7 +55,7 @@ export default function FounderClient() {
                 <div 
                   className="relative h-96 md:h-[500px] rounded-2xl bg-cover bg-center shadow-2xl"
                   style={{
-                    backgroundImage: "url('https://images.unsplash.com/photo-1582750433449-648ed127bb54?ixlib=rb-4.0.3&auto=format&fit=crop&w=987&q=80')"
+                    backgroundImage: "url('/Founder-img.jpg')"
                   }}
                 ></div>
                 <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 flex gap-3">

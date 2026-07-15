@@ -3,12 +3,44 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { MapPin, CheckCircle, Clock, Ban, ArrowLeft, FileDown, Loader2, X, ChevronLeft, ChevronRight, Maximize2 } from "lucide-react";
+import { toast } from "sonner";
+import {
+  MapPin,
+  CheckCircle,
+  Clock,
+  Ban,
+  ArrowLeft,
+  FileDown,
+  Loader2,
+  X,
+  ChevronLeft,
+  ChevronRight,
+  Maximize2,
+  Ruler,
+  IndianRupee,
+  FileCheck,
+  Home as HomeIcon,
+  Share2,
+  Flame,
+} from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import LeadCaptureModal from "@/components/LeadCaptureModal";
+import PropertySidebarForm from "@/components/PropertySidebarForm";
+import PropertyRecentList from "@/components/PropertyRecentList";
+import PropertyStickyBar from "@/components/PropertyStickyBar";
 import { isGalleryVideoUrl } from "@/lib/propertyUtils";
 import { getPropertyBySlug, type Property } from "@/lib/properties";
+
+const REGISTRY_LABELS: Record<string, string> = {
+  freehold: "Freehold",
+  leasehold: "Leasehold",
+};
+
+const POSSESSION_LABELS: Record<string, string> = {
+  ready: "Ready to Move",
+  under_development: "Under Development",
+};
 
 export default function PropertyDetailClient() {
   const params = useParams();
@@ -39,6 +71,48 @@ export default function PropertyDetailClient() {
     } catch (err) {
       console.error("Brochure download failed:", err);
       window.open(property.brochure_url, "_blank");
+    }
+  };
+
+  const handleShare = async () => {
+    const url = window.location.href;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: property?.name, url });
+        toast.success("Shared!");
+      } catch (err) {
+        if ((err as Error)?.name !== "AbortError") {
+          toast.error("Couldn't open share sheet", { description: url });
+        }
+        // AbortError = user cancelled — no toast needed
+      }
+      return;
+    }
+
+    if (navigator.clipboard?.writeText) {
+      try {
+        await navigator.clipboard.writeText(url);
+        toast.success("Link copied to clipboard");
+        return;
+      } catch {
+        // fall through to legacy copy method below
+      }
+    }
+
+    const textarea = document.createElement("textarea");
+    textarea.value = url;
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    try {
+      document.execCommand("copy");
+      toast.success("Link copied to clipboard");
+    } catch {
+      toast.error("Couldn't copy link", { description: url });
+    } finally {
+      document.body.removeChild(textarea);
     }
   };
 
@@ -114,16 +188,82 @@ export default function PropertyDetailClient() {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
           <div className="container mx-auto px-4 relative z-10 pb-10 text-white">
+            <nav className="flex items-center gap-1.5 text-xs text-white/70 mb-4">
+              <Link href="/" className="hover:text-amber-300 transition">Home</Link>
+              <span>/</span>
+              <Link href="/estates" className="hover:text-amber-300 transition">Estates</Link>
+              <span>/</span>
+              <span className="text-white/90 truncate max-w-[160px] sm:max-w-none">{property.name}</span>
+            </nav>
             <Link href="/estates" className="inline-flex items-center gap-2 text-amber-300 hover:text-amber-200 mb-4 font-semibold text-sm">
               <ArrowLeft size={16} /> Back to Estates
             </Link>
             <div className="flex flex-wrap items-center gap-3 mb-3">
               {getStatusBadge(property.status)}
+              {property.plots_left !== null && property.plots_left !== undefined && property.plots_left > 0 && (
+                <span className="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 animate-pulse">
+                  <Flame size={12} /> Only {property.plots_left} Plot{property.plots_left === 1 ? "" : "s"} Left
+                </span>
+              )}
             </div>
-            <h1 className="text-3xl md:text-5xl font-bold font-serif">{property.name}</h1>
+            <div className="flex items-start justify-between gap-4">
+              <h1 className="text-3xl md:text-5xl font-bold font-serif">{property.name}</h1>
+              <div className="relative group shrink-0">
+                <button
+                  onClick={handleShare}
+                  aria-label="Share this property"
+                  className="bg-white/10 hover:bg-white/20 backdrop-blur-sm p-3 rounded-full transition"
+                >
+                  <Share2 size={18} />
+                </button>
+                <span className="pointer-events-none absolute -top-9 right-0 whitespace-nowrap bg-gray-900 text-white text-xs font-medium px-2.5 py-1.5 rounded-md opacity-0 group-hover:opacity-100 transition">
+                  Share this property
+                </span>
+              </div>
+            </div>
             <div className="flex items-center gap-2 text-white/80 mt-2">
               <MapPin size={16} />
               <span>{property.location}</span>
+            </div>
+          </div>
+        </section>
+
+        {/* Quick facts bar */}
+        <section className="bg-white border-b border-gray-100">
+          <div className="container mx-auto px-4 py-5">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="flex items-center gap-3">
+                <div className="bg-green-50 text-green-700 p-2.5 rounded-xl"><Ruler size={20} /></div>
+                <div>
+                  <p className="text-[10px] text-gray-400 uppercase tracking-wide">Plot Size</p>
+                  <p className="font-bold text-gray-800 text-sm">{property.size}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="bg-amber-50 text-amber-700 p-2.5 rounded-xl"><IndianRupee size={20} /></div>
+                <div>
+                  <p className="text-[10px] text-gray-400 uppercase tracking-wide">Price</p>
+                  <p className="font-bold text-gray-800 text-sm">{property.price}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="bg-blue-50 text-blue-700 p-2.5 rounded-xl"><FileCheck size={20} /></div>
+                <div>
+                  <p className="text-[10px] text-gray-400 uppercase tracking-wide">Registry</p>
+                  <p className="font-bold text-gray-800 text-sm">
+                    {property.registry_type ? REGISTRY_LABELS[property.registry_type] || property.registry_type : "On Request"}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="bg-purple-50 text-purple-700 p-2.5 rounded-xl"><HomeIcon size={20} /></div>
+                <div>
+                  <p className="text-[10px] text-gray-400 uppercase tracking-wide">Possession</p>
+                  <p className="font-bold text-gray-800 text-sm">
+                    {property.possession_status ? POSSESSION_LABELS[property.possession_status] || property.possession_status : "On Request"}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -139,6 +279,21 @@ export default function PropertyDetailClient() {
                 />
               </div>
 
+              {property.video_url && (
+                <div className="bg-white rounded-2xl shadow-sm p-6 md:p-8 border border-gray-100">
+                  <h2 className="text-2xl font-bold text-gray-800 mb-4">Project Video</h2>
+                  <div className="relative aspect-video rounded-xl overflow-hidden shadow-sm">
+                    <iframe
+                      src={property.video_url}
+                      title={`${property.name} project video`}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="w-full h-full"
+                    />
+                  </div>
+                </div>
+              )}
+
               {property.features?.length > 0 && (
                 <div className="bg-white rounded-2xl shadow-sm p-6 md:p-8 border border-gray-100">
                   <h2 className="text-2xl font-bold text-gray-800 mb-4">Features & Amenities</h2>
@@ -150,6 +305,19 @@ export default function PropertyDetailClient() {
                       </div>
                     ))}
                   </div>
+                </div>
+              )}
+
+              {property.status !== "sold" && (
+                <div className="bg-gradient-to-r from-green-700 to-green-800 rounded-2xl shadow-md p-6 md:p-8 text-center text-white">
+                  <h3 className="text-xl md:text-2xl font-bold mb-2">Interested in {property.name}?</h3>
+                  <p className="text-green-100 text-sm mb-5">Talk to our team and get a personalized site visit plan.</p>
+                  <button
+                    onClick={() => setShowEnquire(true)}
+                    className="bg-amber-500 text-gray-900 px-8 py-3 rounded-full font-bold hover:bg-amber-400 transition shadow-lg"
+                  >
+                    Enquire Now →
+                  </button>
                 </div>
               )}
 
@@ -184,45 +352,63 @@ export default function PropertyDetailClient() {
                   </div>
                 </div>
               )}
+
+              <div className="bg-white rounded-2xl shadow-sm p-6 md:p-8 border border-gray-100">
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">Location</h2>
+                <div className="rounded-xl overflow-hidden border h-72 md:h-96">
+                  <iframe
+                    src={`https://maps.google.com/maps?q=${encodeURIComponent(property.location + ", Rajasthan")}&output=embed`}
+                    title={`${property.name} location map`}
+                    className="w-full h-full border-0"
+                    loading="lazy"
+                  />
+                </div>
+              </div>
             </div>
 
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-2xl shadow-md p-6 border border-gray-100 sticky top-24 space-y-6">
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="bg-green-50 rounded-xl p-3 text-center">
-                    <p className="text-[10px] text-gray-500 mb-1">Plot Size</p>
-                    <p className="font-bold text-gray-800">{property.size}</p>
+              <div className="sticky top-24 space-y-6">
+                <PropertySidebarForm propertyName={property.name} />
+
+                <div className="bg-white rounded-2xl shadow-md p-6 border border-gray-100 space-y-6">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-green-50 rounded-xl p-3 text-center">
+                      <p className="text-[10px] text-gray-500 mb-1">Plot Size</p>
+                      <p className="font-bold text-gray-800">{property.size}</p>
+                    </div>
+                    <div className="bg-amber-50 rounded-xl p-3 text-center">
+                      <p className="text-[10px] text-gray-500 mb-1">Price</p>
+                      <p className="font-bold text-gray-800">{property.price}</p>
+                    </div>
                   </div>
-                  <div className="bg-amber-50 rounded-xl p-3 text-center">
-                    <p className="text-[10px] text-gray-500 mb-1">Price</p>
-                    <p className="font-bold text-gray-800">{property.price}</p>
-                  </div>
+
+                  {property.status !== "sold" && (
+                    <button
+                      onClick={() => setShowEnquire(true)}
+                      className="w-full bg-green-700 text-white py-3 rounded-xl font-bold hover:bg-green-800 transition shadow-md"
+                    >
+                      Enquire Now
+                    </button>
+                  )}
+
+                  <button
+                    onClick={() => setShowBrochureGate(true)}
+                    disabled={!property.brochure_url}
+                    className="w-full flex items-center justify-center gap-2 border-2 border-amber-500 text-amber-700 py-3 rounded-xl font-bold hover:bg-amber-50 transition disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    <FileDown size={18} />
+                    {property.brochure_url ? "Download Brochure" : "Brochure Coming Soon"}
+                  </button>
+
+                  <a
+                    href="tel:+918955311031"
+                    className="w-full block text-center border-2 border-gray-200 text-gray-600 py-3 rounded-xl font-bold hover:bg-gray-50 transition"
+                  >
+                    Call Us
+                  </a>
                 </div>
 
-                {property.status !== "sold" && (
-                  <button
-                    onClick={() => setShowEnquire(true)}
-                    className="w-full bg-green-700 text-white py-3 rounded-xl font-bold hover:bg-green-800 transition shadow-md"
-                  >
-                    Enquire Now
-                  </button>
-                )}
-
-                <button
-                  onClick={() => setShowBrochureGate(true)}
-                  disabled={!property.brochure_url}
-                  className="w-full flex items-center justify-center gap-2 border-2 border-amber-500 text-amber-700 py-3 rounded-xl font-bold hover:bg-amber-50 transition disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  <FileDown size={18} />
-                  {property.brochure_url ? "Download Brochure" : "Brochure Coming Soon"}
-                </button>
-
-                <a
-                  href="tel:+918955311031"
-                  className="w-full block text-center border-2 border-gray-200 text-gray-600 py-3 rounded-xl font-bold hover:bg-gray-50 transition"
-                >
-                  Call Us
-                </a>
+                <PropertyRecentList excludeId={property.id} />
               </div>
             </div>
           </div>
@@ -282,6 +468,8 @@ export default function PropertyDetailClient() {
           </div>
         </div>
       )}
+
+      <PropertyStickyBar onEnquire={() => setShowEnquire(true)} />
 
       <Footer />
     </>

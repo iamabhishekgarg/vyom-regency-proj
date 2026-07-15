@@ -21,6 +21,10 @@ export interface Property {
   meta_title: string | null;
   meta_description: string | null;
   focus_keyword: string | null;
+  video_url: string | null;
+  registry_type: string | null;
+  possession_status: string | null;
+  plots_left: number | null;
 }
 
 export type PropertyType = "project" | "individual";
@@ -69,6 +73,21 @@ export async function getPropertiesByType(
 
   if (error) {
     console.error("Error fetching properties by type:", error);
+    return [];
+  }
+  return data || [];
+}
+
+export async function getRecentProperties(excludeId: string, limit = 4): Promise<Property[]> {
+  const { data, error } = await supabase
+    .from("properties")
+    .select(ALL_COLUMNS)
+    .neq("id", excludeId)
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    console.error("Error fetching recent properties:", error);
     return [];
   }
   return data || [];
