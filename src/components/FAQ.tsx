@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Accordion,
   AccordionContent,
@@ -7,29 +9,47 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
+const DEFAULT_FAQS = [
+  {
+    question: "Where exactly is the estate located?",
+    answer: "The estate is located in Khairthal, Alwar, Rajasthan. It's a serene location perfect for farmhouses, away from city pollution yet well-connected."
+  },
+  {
+    question: "What is the standard plot size available?",
+    answer: "We primarily offer premium farmhouse plots of 1350 Sq. Yards. This size is ideal for building a spacious farmhouse with plenty of room for gardening and outdoor activities."
+  },
+  {
+    question: "Is the land title clear and secure?",
+    answer: "Yes, Vyom Regency ensures 100% clear titles and complete documentation for every plot. We prioritize transparency and due diligence in all our transactions."
+  },
+  {
+    question: "What basic amenities are provided?",
+    answer: "The community features wide 30ft approach roads, gated security, water supply, and electricity connections. We aim to provide all the essentials for a comfortable living experience."
+  },
+  {
+    question: "Can I visit the site before booking?",
+    answer: "Absolutely! We encourage site visits. You can book a free consultation and site visit through our lead form or by calling us directly at +91 89553 11031."
+  }
+];
+
 export default function FAQ() {
-  const faqs = [
-    {
-      question: "Where exactly is the estate located?",
-      answer: "The estate is located in Kishangarh Bas, Khairthal–Tijara District (formerly Alwar), Rajasthan. It's a serene location perfect for farmhouses, away from city pollution yet well-connected."
-    },
-    {
-      question: "What is the standard plot size available?",
-      answer: "We primarily offer premium farmhouse plots of 1350 Sq. Yards. This size is ideal for building a spacious farmhouse with plenty of room for gardening and outdoor activities."
-    },
-    {
-      question: "Is the land title clear and secure?",
-      answer: "Yes, Vyom Regency ensures 100% clear titles and complete documentation for every plot. We prioritize transparency and due diligence in all our transactions."
-    },
-    {
-      question: "What basic amenities are provided?",
-      answer: "The community features wide 30ft approach roads, gated security, water supply, and electricity connections. We aim to provide all the essentials for a comfortable living experience."
-    },
-    {
-      question: "Can I visit the site before booking?",
-      answer: "Absolutely! We encourage site visits. You can book a free consultation and site visit through our lead form or by calling us directly at +91 89553 11031."
-    }
-  ];
+  const [faqs, setFaqs] = useState(DEFAULT_FAQS);
+
+  useEffect(() => {
+    const fetchFaqs = async () => {
+      const { data, error } = await supabase
+        .from("faqs")
+        .select("*")
+        .order("sort_order", { ascending: true });
+
+      if (!error && data && data.length > 0) {
+        setFaqs(data.map((f: { question: string; answer: string }) => ({ question: f.question, answer: f.answer })));
+      }
+    };
+    fetchFaqs();
+  }, []);
+
+  if (faqs.length === 0) return null;
 
   return (
     <section id="faq" className="py-20 bg-white">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -10,9 +10,22 @@ export default function LeadForm() {
     phone: "",
     email: "",
     city: "",
+    otherCity: "",
     project: "",
   });
+  const [projects, setProjects] = useState<{ name: string; slug: string }[]>([]);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      const { data } = await supabase
+        .from("properties")
+        .select("name, slug")
+        .order("sort_order", { ascending: true });
+      if (data) setProjects(data);
+    };
+    fetchProjects();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -22,17 +35,19 @@ export default function LeadForm() {
     e.preventDefault();
     setStatus("loading");
 
+    const cityValue = formData.city === "other" ? formData.otherCity : formData.city;
+
     const leadPayload = {
       name: formData.name.trim(),
       phone: formData.phone.trim(),
       email: formData.email.trim() || null,
-      city: formData.city || null,
+      city: cityValue || null,
       project: formData.project || null,
       source: "website",
       status: "new",
     };
 
-    if (!leadPayload.name || !leadPayload.phone || !leadPayload.city) {
+    if (!leadPayload.name || !leadPayload.phone || !cityValue) {
       toast.error("Please fill all required fields.");
       setStatus("error");
       return;
@@ -67,11 +82,11 @@ export default function LeadForm() {
     }
 
     toast.success("Success!", {
-      description: "We have received your request. Our team will call you in 10 minutes.",
+      description: "We have received your request. Our team will call you shortly.",
     });
 
     setStatus("success");
-    setFormData({ name: "", phone: "", email: "", city: "", project: "" });
+    setFormData({ name: "", phone: "", email: "", city: "", otherCity: "", project: "" });
     setTimeout(() => setStatus("idle"), 3000);
   };
 
@@ -122,20 +137,33 @@ export default function LeadForm() {
             onChange={handleChange} 
             className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500" 
           />
-          <select 
-            name="city" 
-            value={formData.city} 
-            onChange={handleChange} 
-            required 
-            className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500"
-          >
-            <option value="">Select City *</option>
-            <option value="delhi">Delhi NCR</option>
-            <option value="noida">Noida</option>
-            <option value="gurgaon">Gurgaon</option>
-            <option value="alwar">Alwar</option>
-            <option value="other">Other</option>
-          </select>
+          <div className="relative">
+            <select 
+              name="city" 
+              value={formData.city} 
+              onChange={handleChange} 
+              required 
+              className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500"
+            >
+              <option value="">Select City *</option>
+              <option value="delhi">Delhi NCR</option>
+              <option value="noida">Noida</option>
+              <option value="gurgaon">Gurgaon</option>
+              <option value="alwar">Alwar</option>
+              <option value="other">Other</option>
+            </select>
+            {formData.city === "other" && (
+              <input
+                type="text"
+                name="otherCity"
+                value={formData.otherCity}
+                onChange={handleChange}
+                placeholder="Enter your city name *"
+                required
+                className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 mt-2"
+              />
+            )}
+          </div>
         </div>
         
         <select 
@@ -145,7 +173,9 @@ export default function LeadForm() {
           className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500"
         >
           <option value="">Select Project Interested In</option>
-          <option value="vyom-green-paradise">Vyom Green Paradise (Only 2 left!)</option>
+          {projects.map((p) => (
+            <option key={p.slug} value={p.slug}>{p.name}</option>
+          ))}
           <option value="individual-land">Individual Premium Farm Land</option>
         </select>
         
@@ -157,7 +187,7 @@ export default function LeadForm() {
           {status === "loading" ? "Submitting..." : "📅 Book Site Visit →"}
         </button>
         
-        {status === "success" && <p className="text-green-600 text-center font-semibold">✅ We'll call you in 10 minutes!</p>}
+        {status === "success" && <p className="text-green-600 text-center font-semibold">✅ We will call you shortly!</p>}
       </form>
       
       <p className="text-xs text-gray-400 text-center mt-4">By submitting, you agree to receive updates. Your privacy is respected.</p>

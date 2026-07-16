@@ -15,7 +15,7 @@ export default function Location() {
           </h2>
           <div className="flex items-center justify-center gap-2 text-gray-600 mb-6">
             <MapPin className="text-green-700" size={20} />
-            <p className="text-lg">Kishangarh Bas, Khairthal–Tijara (Alwar), Rajasthan</p>
+            <p className="text-lg">Khairthal, Alwar, Rajasthan</p>
           </div>
           <p className="text-gray-500">
             Experience the perfect blend of nature and connectivity. Our estates are located in a serene, 

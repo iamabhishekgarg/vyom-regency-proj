@@ -61,12 +61,25 @@ export default function AdminBlogPage() {
     focus_keyword: "",
   });
   const [isMounted, setIsMounted] = useState(false);
+  const [slugManuallyEdited, setSlugManuallyEdited] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
     fetchPosts();
     fetchCategories();
   }, []);
+
+  useEffect(() => {
+    if (!slugManuallyEdited && formData.title) {
+      const autoSlug = formData.title
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, "")
+        .replace(/\s+/g, "-")
+        .replace(/-+/g, "-")
+        .replace(/^-|-$/g, "");
+      setFormData((prev) => ({ ...prev, slug: autoSlug }));
+    }
+  }, [formData.title, slugManuallyEdited]);
 
   const fetchPosts = async () => {
     try {
@@ -113,6 +126,7 @@ export default function AdminBlogPage() {
 
   const handleOpenEdit = (post: BlogPost) => {
     setEditing(post);
+    setSlugManuallyEdited(true);
     setFormData({
       ...post,
       tags: post.tags || [],
@@ -145,7 +159,15 @@ export default function AdminBlogPage() {
     setSaving(true);
     const isNew = !editing;
     try {
-      const payload = { ...formData, tags: formData.tags ?? [] };
+      const today = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+      const wordCount = (formData.content || "").replace(/<[^>]*>/g, "").split(/\s+/).filter(Boolean).length;
+      const readTime = `${Math.max(1, Math.ceil(wordCount / 200))} min read`;
+      const payload = {
+        ...formData,
+        tags: formData.tags ?? [],
+        date: formData.date || today,
+        readTime: formData.readTime || readTime,
+      };
       const { error } = isNew
         ? await supabase.from("blog_posts").insert(payload)
         : await supabase.from("blog_posts").update(payload).eq("id", editing!.id);
@@ -231,9 +253,13 @@ export default function AdminBlogPage() {
               type="text"
               required
               value={formData.slug || ""}
-              onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+              onClick={() => !slugManuallyEdited && setSlugManuallyEdited(true)}
+              onChange={(e) => { setSlugManuallyEdited(true); setFormData({ ...formData, slug: e.target.value }); }}
               className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500"
             />
+            {!slugManuallyEdited && formData.title && (
+              <p className="text-xs text-gray-400 mt-1">Auto-generated from title. Click to edit.</p>
+            )}
           </div>
         </div>
 
@@ -421,7 +447,7 @@ export default function AdminBlogPage() {
           </button>
           <button
             type="button"
-            onClick={() => setEditing(null)}
+          onClick={() => { setEditing(null); setSlugManuallyEdited(false); }}
             className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
           >
             Cancel

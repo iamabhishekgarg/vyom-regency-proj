@@ -16,6 +16,7 @@ import {
   Menu,
   X,
   Search,
+  HelpCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getCurrentAdminRole, type AdminRole } from "@/lib/admin";
@@ -25,9 +26,12 @@ const menuItems = [
   { name: "Leads", href: "/admin/leads", icon: Users },
   { name: "Properties", href: "/admin/properties", icon: Building2 },
   { name: "Testimonials", href: "/admin/testimonials", icon: MessageSquare },
+  { name: "Visitor Feedback", href: "/admin/visitor-feedback", icon: MessageSquare },
   { name: "Blog", href: "/admin/blog", icon: FileText },
   { name: "Media", href: "/admin/media", icon: Images },
   { name: "Hero Banner", href: "/admin/hero-management", icon: FileText },
+  { name: "Home Content", href: "/admin/home-content", icon: FileText },
+  { name: "FAQ", href: "/admin/faq", icon: HelpCircle },
   { name: "SEO Settings", href: "/admin/seo", icon: Search },
 ];
 

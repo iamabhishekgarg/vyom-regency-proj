@@ -35,7 +35,7 @@ export default function FounderClient() {
         <section className="relative pt-24 pb-10 bg-gradient-to-r from-green-900 to-green-800 text-white">
           <div className="container mx-auto px-4 text-center">
             <div className="inline-block bg-amber-500 text-green-900 px-4 py-1 rounded-full text-sm font-bold mb-4">
-              Founder & Chairman
+              Founder & Managing Director
             </div>
             <h1 className="text-4xl md:text-6xl font-bold mb-4">
               Mr. Sobaran <span className="text-amber-400">Singh</span>

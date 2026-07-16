@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { MapPin, CheckCircle, Clock, Ban, LayoutGrid, List } from "lucide-react";
+import { CheckCircle, Clock, Ban, LayoutGrid, List } from "lucide-react";
 import LeadCaptureModal from "@/components/LeadCaptureModal";
 import { getPropertiesByType, type Property } from "@/lib/properties";
 
@@ -132,9 +132,6 @@ function PropertyCard({ property, viewMode }: { property: Property; viewMode: "g
               <span className="text-green-700 font-bold text-xl">{property.price}</span>
             </div>
             <div className="flex items-center gap-2 text-gray-500 text-sm mb-4">
-              <MapPin size={14} className="text-green-600" />
-              <span>{property.location}</span>
-              <span className="mx-2">•</span>
               <span>Size: <strong>{property.size}</strong></span>
             </div>
             <p className="text-gray-600 text-sm mb-6 line-clamp-2">{stripHtml(property.description)}</p>
@@ -162,11 +159,7 @@ function PropertyCard({ property, viewMode }: { property: Property; viewMode: "g
         <div className="absolute top-4 left-4">{statusBadge(property.status)}</div>
       </div>
       <div className="p-5 flex flex-col flex-grow">
-        <h3 className="text-xl font-serif font-bold text-gray-800 mb-1 group-hover:text-green-700 transition">{property.name}</h3>
-        <div className="flex items-center gap-1 text-gray-500 text-xs mb-3">
-          <MapPin size={12} className="text-green-600" />
-          <span>{property.location}</span>
-        </div>
+        <h3 className="text-xl font-serif font-bold text-gray-800 mb-3 group-hover:text-green-700 transition">{property.name}</h3>
         <div className="grid grid-cols-2 gap-3 mb-4">
           <div className="bg-green-50 p-2 rounded-lg text-center">
             <p className="text-xs text-gray-500">Area</p>

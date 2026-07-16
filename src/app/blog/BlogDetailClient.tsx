@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { getLatestPosts } from "@/app/data/blogs";
-import type { BlogPost } from "@/app/data/blogs";
+import { getLatestPosts } from "@/lib/blog";
+import type { BlogPost } from "@/lib/blog";
 import { ArrowRight, Twitter, Facebook, MessageCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 

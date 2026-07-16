@@ -138,7 +138,10 @@ export default function EstatesPage() {
                   </div>
                   <div className="p-5">
                     <h3 className="text-xl font-bold text-gray-800 mb-1">{land.name}</h3>
-                    <div className="flex items-center gap-1 text-gray-500 text-xs mb-3">
+                    <div className="location-hide flex items-center gap-1 text-gray-500 text-xs mb-3">
+                      <MapPin size={12} />
+                      <span>{property.location}</span>
+                    </div>
                       <MapPin size={12} />
                       <span>{land.location}</span>
                     </div>
@@ -209,10 +212,7 @@ export default function EstatesPage() {
                   </div>
                   <div className="p-5">
                     <h3 className="text-xl font-bold text-gray-800 mb-1">{property.name}</h3>
-                    <div className="flex items-center gap-1 text-gray-500 text-xs mb-3">
-                      <MapPin size={12} />
-                      <span>{property.location}</span>
-                    </div>
+
                     <div className="grid grid-cols-2 gap-2 mb-3">
                       <div className="bg-green-50 p-2 rounded-lg text-center">
                         <p className="text-xs text-gray-500">Size</p>

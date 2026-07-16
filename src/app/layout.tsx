@@ -17,7 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="antialiased" suppressHydrationWarning>
+      <body className="antialiased min-w-[320px]" suppressHydrationWarning>
         <AuthProvider>{children}</AuthProvider>
         <GlobalWhatsAppButton />
         <SocialSidebar />

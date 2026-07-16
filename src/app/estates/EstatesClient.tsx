@@ -260,9 +260,7 @@ function PropertyCard({ property, viewMode, isIndividual }: { property: Property
               </div>
             </div>
             <div className="flex items-center gap-2 text-gray-500 text-sm mb-4">
-              <MapPin size={14} className="text-green-600" />
-              <span>{property.location}</span>
-              <span className="mx-2">•</span>
+              <span className="location-hide"><MapPin size={14} className="text-green-600" /> {property.location} • </span>
               <span>Size: <strong>{property.size}</strong></span>
             </div>
             <p className="text-gray-600 text-sm mb-6 line-clamp-2">{stripHtml(property.description)}</p>
@@ -302,7 +300,7 @@ function PropertyCard({ property, viewMode, isIndividual }: { property: Property
       </div>
       <div className="p-6 flex flex-col flex-grow">
         <h3 className="text-xl font-bold text-gray-800 mb-1 group-hover:text-green-700 transition">{property.name}</h3>
-        <div className="flex items-center gap-1 text-gray-500 text-xs mb-4">
+        <div className="location-hide flex items-center gap-1 text-gray-500 text-xs mb-4 mt-2">
           <MapPin size={12} className="text-green-600" />
           <span>{property.location}</span>
         </div>

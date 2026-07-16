@@ -28,7 +28,15 @@
 
   html {
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
   }
+
+  @media (max-width: 640px) {
+    html { font-size: 14px; }
+    .container { padding-left: 1rem; padding-right: 1rem; }
+  }
+
+  .location-hide { display: none !important; }
 
   body {
     @apply bg-white text-slate-900 antialiased;

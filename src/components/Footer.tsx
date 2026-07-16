@@ -16,7 +16,7 @@ export default function Footer() {
   const [latestProjects, setLatestProjects] = useState<Property[]>([]);
 
   useEffect(() => {
-    getLatestProperties(4).then(setLatestProjects);
+    getLatestProperties(100).then(setLatestProjects);
   }, []);
 
   return (
@@ -65,6 +65,7 @@ export default function Footer() {
                 { label: "Our Estates", href: "/estates" },
                 { label: "Founder", href: "/founder" },
                 { label: "Blog", href: "/blog" },
+                { label: "Privacy Policy", href: "/privacy-policy" },
               ].map((item) => (
                 <li key={item.label}>
                   <Link href={item.href}
@@ -128,9 +129,6 @@ export default function Footer() {
             © {currentYear} Vyom Regency Pvt Ltd. All rights reserved.
           </p>
           <div className="mt-2 flex justify-center items-center gap-4">
-            <p className="text-gray-600 text-[10px]">
-              *Plots only. Construction is optional. Specifications are as per approved plan.
-            </p>
             <Link href="/login" className="text-gray-700 hover:text-gray-500 text-[10px] underline">
               Admin Login
             </Link>

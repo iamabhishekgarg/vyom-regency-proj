@@ -221,7 +221,7 @@ export default function PropertyDetailClient() {
                 </span>
               </div>
             </div>
-            <div className="flex items-center gap-2 text-white/80 mt-2">
+            <div className="location-hide flex items-center gap-2 text-white/80 mt-2">
               <MapPin size={16} />
               <span>{property.location}</span>
             </div>
@@ -345,17 +345,9 @@ export default function PropertyDetailClient() {
                           <img src={url} alt={`${property.name} ${i + 1}`} className="w-full h-full object-cover group-hover:scale-110 transition duration-500" loading="lazy" />
                           <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center">
                             <Maximize2 className="text-white" size={20} />
-                          </div>
-                        </div>
-                      )
-                    )}
-                  </div>
-                </div>
-              )}
-
               <div className="bg-white rounded-2xl shadow-sm p-6 md:p-8 border border-gray-100">
                 <h2 className="text-2xl font-bold text-gray-800 mb-4">Location</h2>
-                <div className="rounded-xl overflow-hidden border h-72 md:h-96">
+                <div className="rounded-xl overflow-hidden border h-72 md:h-96 location-hide">
                   <iframe
                     src={`https://maps.google.com/maps?q=${encodeURIComponent(property.location + ", Rajasthan")}&output=embed`}
                     title={`${property.name} location map`}
@@ -364,6 +356,14 @@ export default function PropertyDetailClient() {
                   />
                 </div>
               </div>
+            </div>
+                        </div>
+                      )
+                    )}
+                  </div>
+                </div>
+              )}
+
             </div>
 
             <div className="lg:col-span-1">

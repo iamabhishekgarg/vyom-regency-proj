@@ -90,10 +90,11 @@ export default function PropertiesPage() {
                     {property.display_type}
                   </span>
                 </div>
-                <p className="text-xs text-gray-500 mb-2">{property.location}</p>
+
                 {property.property_type === "individual" && (
                   <span className="inline-block text-[10px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-bold mb-2">Individual Land</span>
                 )}
+                <p className="text-xs text-gray-500 mb-2 location-hide">{property.location}</p>
                 <div className="flex justify-between items-center mb-4">
                   <span className="text-green-700 font-bold text-sm">{property.price}</span>
                   <span className="text-gray-400 text-[10px]">Order: {property.sort_order}</span>

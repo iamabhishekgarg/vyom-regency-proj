@@ -41,20 +41,29 @@ const SLIDE_DURATION_MS = 5000;
 export default function Hero() {
   const [activeSlide, setActiveSlide] = useState(0);
   const [slides, setSlides] = useState(FALLBACK_SLIDES);
+  const [content, setContent] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    const fetchSlides = async () => {
-      const { data } = await supabase
-        .from("hero_slides")
-        .select("*")
-        .order("sort_order", { ascending: true });
+    const fetchData = async () => {
+      const [slidesRes, contentRes] = await Promise.all([
+        supabase.from("hero_slides").select("*").order("sort_order", { ascending: true }),
+        supabase.from("site_content").select("*").eq("page", "home"),
+      ]);
 
-      if (data && data.length > 0) {
-        setSlides(data.map((s) => ({ label: s.label || `slide-${s.id}`, url: s.image_url })));
+      if (slidesRes.data && slidesRes.data.length > 0) {
+        setSlides(slidesRes.data.map((s) => ({ label: s.label || `slide-${s.id}`, url: s.image_url })));
         setActiveSlide(0);
       }
+
+      if (contentRes.data) {
+        const map: Record<string, string> = {};
+        contentRes.data.forEach((item: { section: string; content: string }) => {
+          map[item.section] = item.content;
+        });
+        setContent(map);
+      }
     };
-    fetchSlides();
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -117,15 +126,14 @@ export default function Hero() {
         </div>
 
         <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold font-serif leading-tight mb-3">
-          Own Your Dream Farmhouse in the Heart of
-          <span className="text-amber-400"> Aravali Hills</span>
+          {content.hero_title || "Own Your Dream Farmhouse in the Heart of"}
+          <span className="text-amber-400"> {content.hero_title_highlight || "Aravali Hills"}</span>
         </h1>
         <h2 className="text-lg md:text-2xl lg:text-3xl font-semibold leading-snug mb-4 text-white/90">
-          2 Hrs Drive from Delhi NCR in Kishangarh Bas, Alwar
+          {content.hero_subtitle || "2 Hrs Drive from Delhi NCR in Khairthal, Alwar"}
         </h2>
         <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto">
-          Premium Farmhouse Plots | Registry Available | Gated Community | High
-          Investment Growth
+          {content.hero_description || "Premium Farmhouse Plots | Registry Available | Gated Community | High Investment Growth"}
         </p>
 
         {/* CTA Buttons */}

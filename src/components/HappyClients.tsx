@@ -28,18 +28,28 @@ export default function HappyClients() {
   }, []);
 
   const fetchTestimonials = async () => {
-    // ✅ Only fetch approved testimonials for the website
-    const { data, error } = await supabase
-      .from("testimonials")
-      .select("*")
-      .eq("status", "approved")
-      .order("created_at", { ascending: false });
+    const [testimonialsRes, feedbackRes] = await Promise.all([
+      supabase.from("testimonials").select("*").eq("status", "approved").order("created_at", { ascending: false }),
+      supabase.from("website_feedback").select("*").eq("status", "approved").order("created_at", { ascending: false }),
+    ]);
 
-    if (error) {
-      console.error("Error:", error);
-    } else {
-      setTestimonials(data || []);
-    }
+    if (testimonialsRes.error) console.error("Testimonials error:", testimonialsRes.error);
+    if (feedbackRes.error) console.error("Feedback error:", feedbackRes.error);
+
+    const testimonialsData: Testimonial[] = testimonialsRes.data || [];
+    const feedbackData = (feedbackRes.data || []).map((f: { id: number; name: string; rating: number; experience: string; created_at: string }) => ({
+      id: `feedback-${f.id}`,
+      name: f.name,
+      location: "",
+      type: "Visitor",
+      rating: f.rating,
+      text: f.experience,
+      media_type: "text" as const,
+      created_at: f.created_at,
+      status: "approved",
+    }));
+
+    setTestimonials([...testimonialsData, ...feedbackData]);
     setLoading(false);
   };
 

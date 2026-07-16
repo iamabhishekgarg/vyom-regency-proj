@@ -51,7 +51,7 @@ export default function AboutClient() {
               About <span className="text-amber-400">Vyom Regency</span>
             </h1>
             <p className="text-xl max-w-2xl mx-auto">
-              Pvt Ltd | Ex-NSG Commando Led
+              Vyom Regency Pvt Ltd
             </p>
             <div className="w-24 h-1 bg-amber-400 mx-auto mt-6 rounded-full"></div>
           </div>
@@ -67,14 +67,14 @@ export default function AboutClient() {
               </h2>
               <div className="w-20 h-1 bg-green-700 mx-auto rounded-full"></div>
             </div>
-            
+
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div className="space-y-6 text-gray-700 leading-relaxed">
                 <p className="text-lg">
                   <strong className="text-green-700">Vyom Regency Pvt Ltd</strong> was established in <strong>2017</strong> with a simple yet powerful vision — to help people find their perfect agricultural land for farmhouse living with complete transparency and zero hassle.
                 </p>
                 <p>
-                  Founded by <strong className="text-green-700">Mr. Sobaran Singh</strong>, an Ex-NSG Commando with decades of experience in real estate and land development, our company has grown from a small startup to a trusted name across <strong>Uttar Pradesh, Uttarakhand, and Rajasthan</strong>.
+                  Founded by <strong className="text-green-700">Mr. Sobaran Singh</strong>, with decades of experience in real estate and land development, our company has grown from a small startup to a trusted name across <strong>Uttar Pradesh, Uttarakhand, and Rajasthan</strong>.
                 </p>
                 <p>
                   What started as a mission to help buyers find agricultural land with negligible brokerage has now transformed into a full-fledged real estate enterprise. We have successfully delivered <strong>50+ land parcels</strong> and have <strong>3 premium projects</strong> in Rajasthan.
