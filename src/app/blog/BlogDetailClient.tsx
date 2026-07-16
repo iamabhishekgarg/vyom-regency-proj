@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { getLatestPosts } from "@/lib/blog";
 import type { BlogPost } from "@/lib/blog";
+import { supabase } from "@/integrations/supabase/client";
 import { ArrowRight, Twitter, Facebook, MessageCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -12,13 +12,18 @@ interface BlogDetailClientProps {
 }
 
 export default function BlogDetailClient({ post }: BlogDetailClientProps) {
-  const latestPosts = getLatestPosts(3);
+  const [latestPosts, setLatestPosts] = useState<BlogPost[]>([]);
   const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
 
-  // 👉 All references to `window`, `Date.now()`, `Math.random()`, etc. must be inside useEffect
   useEffect(() => {
     setIsMounted(true);
+    supabase
+      .from("blog_posts")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(3)
+      .then(({ data }) => setLatestPosts(data || []));
   }, []);
 
   if (!isMounted) {
