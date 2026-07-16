@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
 
 interface Testimonial {
-  id: number;
+  id: number | string;
   name: string;
   location: string;
   type: string;
