@@ -140,9 +140,6 @@ export default function EstatesPage() {
                     <h3 className="text-xl font-bold text-gray-800 mb-1">{land.name}</h3>
                     <div className="location-hide flex items-center gap-1 text-gray-500 text-xs mb-3">
                       <MapPin size={12} />
-                      <span>{property.location}</span>
-                    </div>
-                      <MapPin size={12} />
                       <span>{land.location}</span>
                     </div>
                     <div className="grid grid-cols-2 gap-2 mb-3">
