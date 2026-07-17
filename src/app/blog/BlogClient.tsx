@@ -3,6 +3,7 @@
 import Link from "next/link";
 import type { BlogPost, BlogCategory } from "@/lib/blog";
 import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { ArrowRight, Mail, CalendarCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -19,16 +20,25 @@ export default function BlogClient({ posts, categories }: BlogClientProps) {
     .slice(0, 6);
   const [email, setEmail] = useState("");
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
-      toast.success("Subscribed!", {
-        description: "You'll receive our latest updates soon.",
-      });
-      setEmail("");
-    } else {
+    if (!email) {
       toast.error("Please enter a valid email address.");
+      return;
     }
+    const { error } = await supabase.from("newsletter_subscribers").insert({ email });
+    if (error) {
+      if (error.code === "23505") {
+        toast.info("Already subscribed!", { description: "This email is already on our list." });
+      } else {
+        toast.error("Subscription failed", { description: "Please try again." });
+      }
+      return;
+    }
+    toast.success("Subscribed!", {
+      description: "You'll receive our latest updates soon.",
+    });
+    setEmail("");
   };
 
   return (

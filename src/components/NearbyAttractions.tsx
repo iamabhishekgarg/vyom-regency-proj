@@ -1,23 +1,23 @@
 "use client";
 
-import { 
-  TreePine, 
-  Castle, 
-  Building2, 
-  Crown, 
-  Compass, 
-  Sprout, 
-  Building, 
-  Map, 
-  Clock, 
-  Navigation2 
+import {
+  TreePine,
+  Castle,
+  Building2,
+  Crown,
+  Compass,
+  Sprout,
+  Building,
+  Map,
+  Clock,
+  Navigation2
 } from "lucide-react";
 
 export default function NearbyAttractions() {
   const attractions = [
     {
       name: "Sariska Tiger Reserve",
-      distance: "35 km",
+      distance: "65 km",
       type: "Wildlife",
       icon: <TreePine className="w-6 h-6" />,
       description: "Famous tiger reserve & national park for weekend safaris.",
@@ -125,7 +125,7 @@ export default function NearbyAttractions() {
               <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-green-700 transition-colors">
                 {item.name}
               </h3>
-              
+
               <div className="flex items-center gap-4 text-[10px] uppercase tracking-wider font-bold text-gray-400 mb-3">
                 <span className="text-green-600">{item.type}</span>
                 <span className="flex items-center gap-1">
@@ -140,8 +140,8 @@ export default function NearbyAttractions() {
               {/* Progress Bar Style Distance UI */}
               <div className="pt-4 border-t border-gray-50 flex items-center justify-between">
                 <div className="flex-1 h-1 bg-gray-100 rounded-full overflow-hidden mr-4">
-                  <div 
-                    className="h-full bg-green-600/30 group-hover:bg-green-600 transition-all duration-500" 
+                  <div
+                    className="h-full bg-green-600/30 group-hover:bg-green-600 transition-all duration-500"
                     style={{ width: idx % 2 === 0 ? '70%' : '45%' }}
                   ></div>
                 </div>
@@ -162,14 +162,14 @@ export default function NearbyAttractions() {
               <rect width="100" height="100" fill="url(#grid)" />
             </svg>
           </div>
-          
+
           <div className="relative z-10">
             <p className="text-amber-400 font-bold uppercase tracking-widest text-xs mb-3">Location Advantage</p>
             <h3 className="text-white text-xl md:text-2xl font-serif font-bold mb-4">
               Centrally located between wildlife and urban luxury.
             </h3>
             <p className="text-green-100/70 text-sm max-w-2xl mx-auto leading-relaxed">
-              Kishangarh Bas serves as the perfect base camp for Rajasthan's heritage circuit. 
+              Khairthal Kishangarh Bas serves as the perfect base camp for Rajasthan's heritage circuit.
               Everything you need is within a comfortable 1-hour drive.
             </p>
           </div>

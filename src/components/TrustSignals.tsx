@@ -11,7 +11,7 @@ export default function TrustSignals() {
           Why <span className="text-green-700">Trust Vyom Regency?</span>
         </h2>
         <p className="text-center text-gray-600 mb-12">100% transparent since 2017</p>
-        
+
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
           {/* Badge 1 */}
           <div className="text-center p-6 bg-green-50 rounded-xl">
@@ -47,7 +47,7 @@ export default function TrustSignals() {
             <p className="text-gray-600 text-sm">3 Projects & 50+ Land Pieces</p>
           </div>
         </div>
-        
+
         {/* Google Map */}
         <div className="mt-16">
           <div className="text-center mb-6">
@@ -67,7 +67,8 @@ export default function TrustSignals() {
             ></iframe>
           </div>
           <p className="text-center text-gray-500 text-sm mt-4">
-            Kishangarh Bas, Khairthal-Tijara District, Rajasthan | 2 hours from Delhi NCR
+            Vyom Regency Pvt. Ltd.
+            Khasra No. 30, Shyamaka, Khairthal, Rajasthan 301404
           </p>
         </div>
       </div>

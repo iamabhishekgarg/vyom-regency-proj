@@ -233,33 +233,33 @@ export default function PropertyDetailClient() {
           <div className="container mx-auto px-4 py-5">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="flex items-center gap-3">
-                <div className="bg-green-50 text-green-700 p-2.5 rounded-xl"><Ruler size={20} /></div>
+                <div className="bg-green-50 text-green-700 p-2.5 rounded-xl"><Ruler size={24} /></div>
                 <div>
-                  <p className="text-[10px] text-gray-400 uppercase tracking-wide">Plot Size</p>
-                  <p className="font-bold text-gray-800 text-sm">{property.size}</p>
+                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Plot Size</p>
+                  <p className="font-bold text-gray-800 text-base lg:text-lg">{property.size}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <div className="bg-amber-50 text-amber-700 p-2.5 rounded-xl"><IndianRupee size={20} /></div>
+                <div className="bg-amber-50 text-amber-700 p-2.5 rounded-xl"><IndianRupee size={24} /></div>
                 <div>
-                  <p className="text-[10px] text-gray-400 uppercase tracking-wide">Price</p>
-                  <p className="font-bold text-gray-800 text-sm">{property.price}</p>
+                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Price</p>
+                  <p className="font-bold text-gray-800 text-base lg:text-lg">{property.price}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <div className="bg-blue-50 text-blue-700 p-2.5 rounded-xl"><FileCheck size={20} /></div>
+                <div className="bg-blue-50 text-blue-700 p-2.5 rounded-xl"><FileCheck size={24} /></div>
                 <div>
-                  <p className="text-[10px] text-gray-400 uppercase tracking-wide">Registry</p>
-                  <p className="font-bold text-gray-800 text-sm">
+                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Registry</p>
+                  <p className="font-bold text-gray-800 text-base lg:text-lg">
                     {property.registry_type ? REGISTRY_LABELS[property.registry_type] || property.registry_type : "On Request"}
                   </p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <div className="bg-purple-50 text-purple-700 p-2.5 rounded-xl"><HomeIcon size={20} /></div>
+                <div className="bg-purple-50 text-purple-700 p-2.5 rounded-xl"><HomeIcon size={24} /></div>
                 <div>
-                  <p className="text-[10px] text-gray-400 uppercase tracking-wide">Possession</p>
-                  <p className="font-bold text-gray-800 text-sm">
+                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Possession</p>
+                  <p className="font-bold text-gray-800 text-base lg:text-lg">
                     {property.possession_status ? POSSESSION_LABELS[property.possession_status] || property.possession_status : "On Request"}
                   </p>
                 </div>

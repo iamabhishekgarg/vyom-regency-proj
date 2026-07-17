@@ -40,7 +40,6 @@ export default function FounderClient() {
             <h1 className="text-4xl md:text-6xl font-bold mb-4">
               Mr. Sobaran <span className="text-amber-400">Singh</span>
             </h1>
-            <p className="text-xl md:text-2xl mb-2">Ex-NSG Commando</p>
             <p className="text-lg text-amber-200">Founder, Vyom Regency Pvt Ltd | Est. 2017</p>
             <div className="w-24 h-1 bg-amber-400 mx-auto mt-6 rounded-full"></div>
           </div>
@@ -52,7 +51,7 @@ export default function FounderClient() {
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div className="relative">
                 <div className="absolute -top-4 -left-4 w-full h-full border-4 border-green-200 rounded-2xl"></div>
-                <div 
+                <div
                   className="relative h-96 md:h-[500px] rounded-2xl bg-cover bg-center shadow-2xl"
                   style={{
                     backgroundImage: "url('/Founder-img.jpg')"
@@ -74,12 +73,12 @@ export default function FounderClient() {
                   <h2 className="text-3xl font-bold text-gray-800 mt-2">A Man of Discipline & Integrity</h2>
                 </div>
                 <p className="text-gray-700 mb-4 leading-relaxed">
-                  <strong className="text-green-700">Mr. Sobaran Singh</strong> is not your typical real estate entrepreneur. 
-                  Before entering the world of land development, he served as a <strong className="text-green-700">Commando in India's elite National Security Guard (NSG)</strong> — 
+                  <strong className="text-green-700">Mr. Sobaran Singh</strong> is not your typical real estate entrepreneur.
+                  Before entering the world of land development, he served as a <strong className="text-green-700">Commando in India's elite National Security Guard (NSG)</strong> —
                   the country's premier special forces unit.
                 </p>
                 <p className="text-gray-700 mb-4 leading-relaxed">
-                  The discipline, integrity, and commitment to excellence that he cultivated during his service years 
+                  The discipline, integrity, and commitment to excellence that he cultivated during his service years
                   now form the bedrock of <strong className="text-green-700">Vyom Regency Pvt Ltd</strong>.
                 </p>
                 <div className="bg-gray-50 p-4 rounded-lg border-l-4 border-green-700 my-6">

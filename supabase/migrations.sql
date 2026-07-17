@@ -43,6 +43,21 @@ INSERT INTO site_content (page, section, content) VALUES
   ('home', 'benefits_title', 'Why Choose Vyom Regency?')
 ON CONFLICT (page, section) DO NOTHING;
 
+-- Newsletter subscribers table
+CREATE TABLE IF NOT EXISTS newsletter_subscribers (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  email TEXT NOT NULL UNIQUE,
+  subscribed_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE newsletter_subscribers ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public can insert newsletter subscribers"
+  ON newsletter_subscribers FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Authenticated can view newsletter subscribers"
+  ON newsletter_subscribers FOR SELECT USING (auth.role() = 'authenticated');
+
 -- Insert default FAQs
 INSERT INTO faqs (question, answer, sort_order) VALUES
   ('Where exactly is the estate located?', 'The estate is located in Khairthal, Alwar, Rajasthan. It''s a serene location perfect for farmhouses, away from city pollution yet well-connected.', 0),

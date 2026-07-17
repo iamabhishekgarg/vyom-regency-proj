@@ -27,7 +27,7 @@ export default function HomeClient() {
         <Projects />
         <IndividualLand />
         <HomeGallery />
-        <div className="location-hide"><NearbyAttractions /></div>
+        <NearbyAttractions />
         <InvestorSection />
         <HappyClients />
         <VisitorFeedback />

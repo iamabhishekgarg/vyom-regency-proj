@@ -17,6 +17,7 @@ import {
   X,
   Search,
   HelpCircle,
+  Mail,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getCurrentAdminRole, type AdminRole } from "@/lib/admin";
@@ -27,6 +28,7 @@ const menuItems = [
   { name: "Properties", href: "/admin/properties", icon: Building2 },
   { name: "Testimonials", href: "/admin/testimonials", icon: MessageSquare },
   { name: "Visitor Feedback", href: "/admin/visitor-feedback", icon: MessageSquare },
+  { name: "Newsletter", href: "/admin/newsletter", icon: Mail },
   { name: "Blog", href: "/admin/blog", icon: FileText },
   { name: "Media", href: "/admin/media", icon: Images },
   { name: "Hero Banner", href: "/admin/hero-management", icon: FileText },
@@ -86,18 +88,33 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed top-0 left-0 h-full bg-gray-900 text-white w-64 z-40 transform transition-transform duration-300 ease-in-out",
+          "fixed top-0 left-0 h-full bg-gray-900 text-white w-64 z-40 transform transition-transform duration-300 ease-in-out flex flex-col",
           sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
       >
-        <div className="p-6 border-b border-gray-800">
+        <div className="p-6 border-b border-gray-800 shrink-0">
           <h2 className="text-xl font-bold">
             Vyom <span className="text-green-400">Regency</span>
           </h2>
           <p className="text-xs text-gray-400 mt-1">Admin Panel</p>
         </div>
 
-        <nav className="p-4 space-y-1">
+        <div className="px-4 py-3 border-b border-gray-800">
+          <div className="flex items-center gap-3 px-2">
+            <div className="w-8 h-8 shrink-0 bg-green-600 rounded-full flex items-center justify-center">
+              <span className="text-sm font-bold leading-none">A</span>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium truncate">{userEmail || "Admin"}</p>
+              <p className="text-xs text-gray-400 capitalize">{adminRole}</p>
+            </div>
+            <button onClick={handleLogout} className="text-gray-400 hover:text-white transition" title="Logout">
+              <LogOut size={16} />
+            </button>
+          </div>
+        </div>
+
+        <nav className="p-4 space-y-1 flex-1 overflow-y-auto">
           {menuItems.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;
@@ -120,24 +137,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           })}
         </nav>
 
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-800">
-          <div className="flex items-center gap-3 mb-3 px-2">
-            <div className="w-8 h-8 shrink-0 bg-green-600 rounded-full flex items-center justify-center">
-              <span className="text-sm font-bold leading-none">A</span>
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate">{userEmail || "Admin"}</p>
-              <p className="text-xs text-gray-400 capitalize">{adminRole}</p>
-            </div>
-          </div>
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-3 px-4 py-3 w-full text-gray-300 hover:bg-gray-800 rounded-lg transition"
-          >
-            <LogOut size={18} />
-            <span>Logout</span>
-          </button>
-        </div>
       </aside>
 
       {/* Main Content */}
