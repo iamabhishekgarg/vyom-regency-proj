@@ -47,6 +47,9 @@ export default {
         'wider': '0.03em',
         'widest': '0.05em',
       },
+      minHeight: {
+        screen: '70vh',
+      },
     },
   },
   plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
