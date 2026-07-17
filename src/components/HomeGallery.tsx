@@ -124,7 +124,7 @@ export default function HomeGallery() {
               Our Gallery
             </span>
             <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-800 mt-2 mb-3">
-              Glimpses or <span className="text-amber-600">Project</span>
+              Glimpses of <span className="text-amber-600">Project</span>
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto text-sm md:text-base">
               Real images from our farmhouse projects — experience the beauty of nature
