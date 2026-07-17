@@ -1,9 +1,14 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { AuthProvider } from "@/components/AuthProvider";
 import GlobalWhatsAppButton from "@/components/GlobalWhatsAppButton";
 import SocialSidebar from "@/components/SocialSidebar";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 0.8,
+};
 
 export const metadata: Metadata = {
   title: "Vyom Regency Pvt Ltd - Premium Farmhouse Plots in Rajasthan",

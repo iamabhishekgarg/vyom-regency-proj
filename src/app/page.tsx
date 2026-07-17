@@ -1,5 +1,8 @@
 import HomeClient from "./HomeClient";
 import { getPageSeo, buildMetadata } from "@/lib/seo";
+import { supabase } from "@/integrations/supabase/client";
+
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata() {
   const seo = await getPageSeo("home");
@@ -10,6 +13,22 @@ export async function generateMetadata() {
   });
 }
 
-export default function Home() {
-  return <HomeClient />;
+export default async function Home() {
+  const [slidesRes, contentRes] = await Promise.all([
+    supabase.from("hero_slides").select("*").order("sort_order", { ascending: true }),
+    supabase.from("site_content").select("*").eq("page", "home"),
+  ]);
+
+  const initialSlides = slidesRes.data && slidesRes.data.length > 0 
+    ? slidesRes.data.map((s) => ({ label: s.label || `slide-${s.id}`, url: s.image_url }))
+    : null;
+
+  const initialContent: Record<string, string> = {};
+  if (contentRes.data) {
+    contentRes.data.forEach((item) => {
+      initialContent[item.section] = item.content;
+    });
+  }
+
+  return <HomeClient initialSlides={initialSlides} initialContent={initialContent} />;
 }

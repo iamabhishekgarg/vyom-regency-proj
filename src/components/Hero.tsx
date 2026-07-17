@@ -36,12 +36,23 @@ const FALLBACK_SLIDES = [
   },
 ];
 
+interface Slide {
+  label: string;
+  url: string;
+}
+
 const SLIDE_DURATION_MS = 5000;
 
-export default function Hero() {
+export default function Hero({
+  initialSlides,
+  initialContent,
+}: {
+  initialSlides?: Slide[];
+  initialContent?: Record<string, string>;
+}) {
   const [activeSlide, setActiveSlide] = useState(0);
-  const [slides, setSlides] = useState(FALLBACK_SLIDES);
-  const [content, setContent] = useState<Record<string, string>>({});
+  const [slides, setSlides] = useState<Slide[]>(initialSlides || FALLBACK_SLIDES);
+  const [content, setContent] = useState<Record<string, string>>(initialContent || {});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -159,20 +170,22 @@ export default function Hero() {
         {/* Trust Badges */}
         <div className="flex justify-center flex-wrap gap-6 mt-12">
           {[
-            { icon: "✅", text: "Registry Ready" },
-            { icon: "🏛️", text: "Clear Title" },
-            { icon: "🛣️", text: "Gravel Road" },
-            { icon: "💧", text: "water Connection" },
-           { icon: "🌬️", text: "Pollution Free zone" },
-            { icon: "⚡️", text: "Electricity" },
-            { icon: "🛡️", text: "Gated community" },
-            { icon: "🔒", text: "24*7 Security" },
+            { icon: "✅", text: content.pill_1 || "Registry Ready" },
+            { icon: "🏛️", text: content.pill_2 || "Clear Title" },
+            { icon: "🛣️", text: content.pill_3 || "Gravel Road" },
+            { icon: "💧", text: content.pill_4 || "water Connection" },
+            { icon: "🌬️", text: content.pill_5 || "Pollution Free zone" },
+            { icon: "⚡️", text: content.pill_6 || "Electricity" },
+            { icon: "🛡️", text: content.pill_7 || "Gated community" },
+            { icon: "🔒", text: content.pill_8 || "24*7 Security" },
+            ...(content.pill_9 ? [{ icon: null, text: content.pill_9 }] : []),
+            ...(content.pill_10 ? [{ icon: null, text: content.pill_10 }] : []),
           ].map((item, i) => (
             <div
               key={i}
               className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full"
             >
-              <span>{item.icon}</span>
+              {item.icon && <span>{item.icon}</span>}
               <span className="text-sm">{item.text}</span>
             </div>
           ))}

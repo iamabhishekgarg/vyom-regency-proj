@@ -16,12 +16,18 @@ import FAQ from "@/components/FAQ";
 import InvestorSection from "@/components/InvestorSection";
 import ClientComponentsWrapper from "@/components/ClientComponentsWrapper";
 
-export default function HomeClient() {
+export default function HomeClient({
+  initialSlides,
+  initialContent,
+}: {
+  initialSlides: any;
+  initialContent: Record<string, string>;
+}) {
   return (
     <>
       <Header />
       <main>
-        <Hero />
+        <Hero initialSlides={initialSlides} initialContent={initialContent} />
         <Benefits />
         <TrustSignals />
         <Projects />

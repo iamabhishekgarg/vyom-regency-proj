@@ -54,8 +54,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         return;
       }
       setUserEmail(data.user?.email || null);
+      
+      if (data.user) {
+        const { data: profile } = await supabase
+          .from("admin_profiles")
+          .select("role")
+          .eq("id", data.user.id)
+          .maybeSingle();
+        setAdminRole((profile?.role as AdminRole) || "editor");
+      } else {
+        setAdminRole("editor");
+      }
+      
       setAuthChecked(true);
-      getCurrentAdminRole().then(setAdminRole);
     };
     getUser();
 
