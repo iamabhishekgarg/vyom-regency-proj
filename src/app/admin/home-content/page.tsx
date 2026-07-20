@@ -19,29 +19,29 @@ const SECTIONS = [
   { key: "hero_subtitle", label: "Hero Subtitle" },
   { key: "hero_description", label: "Hero Description" },
   { key: "benefits_title", label: "Benefits Section Title" },
-  { key: "pill_1", label: "Pill 1 Text (Registry Ready)" },
-  { key: "pill_2", label: "Pill 2 Text (Clear Title)" },
-  { key: "pill_3", label: "Pill 3 Text (Gravel Road)" },
-  { key: "pill_4", label: "Pill 4 Text (water Connection)" },
-  { key: "pill_5", label: "Pill 5 Text (Pollution Free zone)" },
-  { key: "pill_6", label: "Pill 6 Text (Electricity)" },
-  { key: "pill_7", label: "Pill 7 Text (Gated community)" },
-  { key: "pill_8", label: "Pill 8 Text (24*7 Security)" },
-  { key: "pill_9", label: "Pill 9 Text (Optional)" },
-  { key: "pill_10", label: "Pill 10 Text (Optional)" },
+  { key: "pill_1", label: "Pill 1 Text" },
+  { key: "pill_2", label: "Pill 2 Text" },
+  { key: "pill_3", label: "Pill 3 Text" },
+  { key: "pill_4", label: "Pill 4 Text" },
+  { key: "pill_5", label: "Pill 5 Text" },
+  { key: "pill_6", label: "Pill 6 Text" },
+  { key: "pill_7", label: "Pill 7 Text" },
+  { key: "pill_8", label: "Pill 8 Text" },
+  { key: "pill_9", label: "Pill 9 Text" },
+  { key: "pill_10", label: "Pill 10 Text" },
 ];
 
 const PILL_INFO = [
-  { key: "pill_1", icon: "✅", defaultText: "Registry Ready", label: "Pill 1" },
-  { key: "pill_2", icon: "🏛️", defaultText: "Clear Title", label: "Pill 2" },
-  { key: "pill_3", icon: "🛣️", defaultText: "Gravel Road", label: "Pill 3" },
-  { key: "pill_4", icon: "💧", defaultText: "water Connection", label: "Pill 4" },
-  { key: "pill_5", icon: "🌬️", defaultText: "Pollution Free zone", label: "Pill 5" },
-  { key: "pill_6", icon: "⚡️", defaultText: "Electricity", label: "Pill 6" },
-  { key: "pill_7", icon: "🛡️", defaultText: "Gated community", label: "Pill 7" },
-  { key: "pill_8", icon: "🔒", defaultText: "24*7 Security", label: "Pill 8" },
-  { key: "pill_9", icon: null, defaultText: "", label: "Pill 9 (Optional, No Icon)" },
-  { key: "pill_10", icon: null, defaultText: "", label: "Pill 10 (Optional, No Icon)" },
+  { key: "pill_1", defaultText: "", label: "Pill 1" },
+  { key: "pill_2", defaultText: "", label: "Pill 2" },
+  { key: "pill_3", defaultText: "", label: "Pill 3" },
+  { key: "pill_4", defaultText: "", label: "Pill 4" },
+  { key: "pill_5", defaultText: "", label: "Pill 5" },
+  { key: "pill_6", defaultText: "", label: "Pill 6" },
+  { key: "pill_7", defaultText: "", label: "Pill 7" },
+  { key: "pill_8", defaultText: "", label: "Pill 8" },
+  { key: "pill_9", defaultText: "", label: "Pill 9" },
+  { key: "pill_10", defaultText: "", label: "Pill 10" },
 ];
 
 export default function HomeContentPage() {
@@ -209,30 +209,14 @@ export default function HomeContentPage() {
                       <label className="text-xs font-bold text-gray-600 uppercase tracking-wider">
                         {pill.label}
                       </label>
-                      {pill.icon ? (
-                        <span className="text-xs bg-gray-100 px-2 py-0.5 rounded text-gray-500 font-medium">
-                          Icon: {pill.icon}
-                        </span>
-                      ) : (
-                        <span className="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded font-bold uppercase">
-                          No Icon
-                        </span>
-                      )}
                     </div>
-                    <div className="relative">
-                      {pill.icon && (
-                        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-base select-none pointer-events-none">
-                          {pill.icon}
-                        </span>
-                      )}
+                    <div>
                       <input
                         type="text"
                         value={contents[pill.key] ?? ""}
                         onChange={(e) => handleChange(pill.key, e.target.value)}
                         placeholder={pill.defaultText || "Add text description..."}
-                        className={`w-full py-2.5 pr-4 border rounded-xl focus:ring-2 focus:ring-green-500/20 focus:border-green-600 outline-none transition text-sm bg-gray-50/50 ${
-                          pill.icon ? "pl-10" : "pl-4"
-                        }`}
+                        className="w-full py-2.5 px-4 border rounded-xl focus:ring-2 focus:ring-green-500/20 focus:border-green-600 outline-none transition text-sm bg-gray-50/50"
                       />
                     </div>
                   </div>
@@ -268,16 +252,15 @@ export default function HomeContentPage() {
               {/* Pills render list */}
               <div className="flex justify-center flex-wrap gap-2 max-w-md mx-auto">
                 {PILL_INFO.map((pill) => {
-                  const val = contents[pill.key] || pill.defaultText;
-                  // If it's an optional pill (no icon) and has no configured value, don't show it
-                  if (!pill.icon && !contents[pill.key]) return null;
+                  const val = contents[pill.key];
+                  // If pill has no value entered by admin, don't show it
+                  if (!val || !val.trim()) return null;
 
                   return (
                     <div
                       key={pill.key}
                       className="flex items-center gap-1 bg-white/10 backdrop-blur-sm px-2.5 py-1 rounded-full border border-white/5 shadow-sm"
                     >
-                      {pill.icon && <span className="text-xs">{pill.icon}</span>}
                       <span className="text-[10px] font-medium text-white/90">{val}</span>
                     </div>
                   );

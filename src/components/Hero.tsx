@@ -93,9 +93,9 @@ export default function Hero({
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden">
+    <section className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center pt-20 pb-24 md:pt-24 md:pb-28 lg:pt-24 lg:pb-24">
       {/* Image slider layer — rotates automatically, independent of the text layer below */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 overflow-hidden">
         {slides.map((slide, i) => (
           <div
             key={slide.label}
@@ -113,89 +113,94 @@ export default function Hero({
         <button
           type="button"
           onClick={prevSlide}
-          className="pointer-events-auto rounded-full bg-black/40 text-white p-3 shadow-lg transition hover:bg-black/60"
+          className="pointer-events-auto rounded-full bg-black/40 text-white p-2.5 sm:p-3 shadow-lg transition hover:bg-black/60"
           aria-label="Previous slide"
         >
-          <ArrowLeft size={20} />
+          <ArrowLeft size={18} />
         </button>
 
         <button
           type="button"
           onClick={nextSlide}
-          className="pointer-events-auto rounded-full bg-black/40 text-white p-3 shadow-lg transition hover:bg-black/60"
+          className="pointer-events-auto rounded-full bg-black/40 text-white p-2.5 sm:p-3 shadow-lg transition hover:bg-black/60"
           aria-label="Next slide"
         >
-          <ArrowRight size={20} />
+          <ArrowRight size={18} />
         </button>
       </div>
 
       {/* Text + CTA layer — stays fixed on screen, unaffected by the slider */}
-      <div className="container mx-auto px-4 text-center text-white max-w-5xl mx-auto z-10 relative">
+      <div className="container mx-auto px-4 text-center text-white max-w-4xl z-10 relative">
         {/* Urgency Badge */}
-        <div className="inline-block bg-red-600 text-white px-4 py-2 rounded-full text-sm font-bold mb-6 animate-pulse">
+        <div className="inline-block bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold mb-2 md:mb-3 animate-pulse">
           Hurry Price Revising Soon
         </div>
 
-        <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold font-serif leading-tight mb-3">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold font-serif leading-tight mb-2 md:mb-3">
           {content.hero_title || "Own Your Dream Farmhouse in the Heart of"}
           <span className="text-amber-400"> {content.hero_title_highlight || "Aravali Hills"}</span>
         </h1>
-        <h2 className="text-lg md:text-2xl lg:text-3xl font-semibold leading-snug mb-4 text-white/90">
+        <h2 className="text-sm sm:text-base md:text-xl lg:text-2xl font-semibold leading-snug mb-2 md:mb-3 text-white/90">
           {content.hero_subtitle || "2 Hrs Drive from Delhi NCR in Khairthal, Alwar"}
         </h2>
-        <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto">
+        <p className="text-xs sm:text-sm md:text-base mb-3 md:mb-4 max-w-xl mx-auto text-white/80">
           {content.hero_description || "Premium Farmhouse Plots | Registry Available | Gated Community | High Investment Growth"}
         </p>
 
         {/* CTA Buttons */}
-        <div className="flex items-start gap-4 justify-center flex-wrap">
+        <div className="flex items-start gap-2.5 sm:gap-3 justify-center flex-wrap">
           <div className="flex flex-col items-center">
             <Link
               href="#lead-form"
-              className="bg-amber-500 text-gray-900 px-8 py-4 rounded-full text-lg font-bold hover:bg-white transition inline-flex items-center gap-2 shadow-xl"
+              className="bg-amber-500 text-gray-900 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-bold hover:bg-white transition inline-flex items-center gap-1.5 shadow-md"
             >
-              📅 Schedule Site Visit
+              Schedule Site Visit
             </Link>
           </div>
           <div className="flex flex-col items-center">
             <Link
               href="tel:+918955311031"
-              className="bg-amber-500 text-gray-900 px-8 py-4 rounded-full text-lg font-bold hover:bg-white transition inline-flex items-center gap-2 shadow-xl"
+              className="bg-amber-500 text-gray-900 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-bold hover:bg-white transition inline-flex items-center gap-1.5 shadow-md"
             >
-              📞 Call Now
+              Call Now
             </Link>
           </div>
         </div>
 
         {/* Trust Badges */}
-        <div className="flex justify-center flex-wrap gap-6 mt-12">
+        <div className="flex justify-center flex-wrap gap-1.5 sm:gap-2 mt-4 md:mt-6 max-w-3xl mx-auto">
           {[
-            { icon: "✅", text: content.pill_1 || "Registry Ready" },
-            { icon: "🏛️", text: content.pill_2 || "Clear Title" },
-            { icon: "🛣️", text: content.pill_3 || "Gravel Road" },
-            { icon: "💧", text: content.pill_4 || "water Connection" },
-            { icon: "🌬️", text: content.pill_5 || "Pollution Free zone" },
-            { icon: "⚡️", text: content.pill_6 || "Electricity" },
-            { icon: "🛡️", text: content.pill_7 || "Gated community" },
-            { icon: "🔒", text: content.pill_8 || "24*7 Security" },
-            ...(content.pill_9 ? [{ icon: null, text: content.pill_9 }] : []),
-            ...(content.pill_10 ? [{ icon: null, text: content.pill_10 }] : []),
-          ].map((item, i) => (
-            <div
-              key={i}
-              className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full"
-            >
-              {item.icon && <span>{item.icon}</span>}
-              <span className="text-sm">{item.text}</span>
-            </div>
-          ))}
+            content.pill_1,
+            content.pill_2,
+            content.pill_3,
+            content.pill_4,
+            content.pill_5,
+            content.pill_6,
+            content.pill_7,
+            content.pill_8,
+            content.pill_9,
+            content.pill_10,
+          ]
+            .filter((text): text is string => Boolean(text && text.trim()))
+            .map((text, i) => {
+              const cleanText = text.replace(/\p{Extended_Pictographic}/gu, "").trim();
+              if (!cleanText) return null;
+              return (
+                <div
+                  key={i}
+                  className="flex items-center gap-1.5 bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full border border-white/10"
+                >
+                  <span className="text-xs font-medium">{cleanText}</span>
+                </div>
+              );
+            })}
         </div>
 
         {/* Price Indicator */}
-        <div className="mt-8 bg-white/10 backdrop-blur-sm inline-block px-6 py-3 rounded-full">
-          <p className="text-sm">
+        <div className="mt-3 md:mt-4 bg-white/10 backdrop-blur-sm inline-block px-4 py-1.5 sm:px-5 sm:py-2 rounded-full border border-white/10">
+          <p className="text-xs sm:text-sm">
             Area starts from {" "}
-            <span className="text-amber-300 font-bold text-xl">1250 sq yard</span>{" "}
+            <span className="text-amber-300 font-bold text-sm sm:text-base md:text-lg">1250 sq yard</span>{" "}
           </p>
         </div>
       </div>
