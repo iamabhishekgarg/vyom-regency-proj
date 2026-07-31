@@ -18,6 +18,9 @@ const SECTIONS = [
   { key: "hero_title_highlight", label: "Hero Title (highlighted word)" },
   { key: "hero_subtitle", label: "Hero Subtitle" },
   { key: "hero_description", label: "Hero Description" },
+  { key: "urgency_badge", label: "Urgency Badge" },
+  { key: "area_starts_prefix", label: "Area Starts Badge Prefix" },
+  { key: "area_starts_value", label: "Area Starts Badge Value" },
   { key: "benefits_title", label: "Benefits Section Title" },
   { key: "pill_1", label: "Pill 1 Text" },
   { key: "pill_2", label: "Pill 2 Text" },
@@ -172,6 +175,40 @@ export default function HomeContentPage() {
                   className="w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-green-500/20 focus:border-green-600 outline-none transition text-sm bg-gray-50/50 resize-y"
                 />
               </div>
+
+              <div className="pt-2 border-t border-gray-100">
+                <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-2">Urgency Badge Text</label>
+                <input
+                  type="text"
+                  value={contents.urgency_badge ?? ""}
+                  onChange={(e) => handleChange("urgency_badge", e.target.value)}
+                  placeholder="e.g. Hurry Price Revising Soon"
+                  className="w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-green-500/20 focus:border-green-600 outline-none transition text-sm bg-gray-50/50"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-2">Area Badge (Prefix)</label>
+                  <input
+                    type="text"
+                    value={contents.area_starts_prefix ?? ""}
+                    onChange={(e) => handleChange("area_starts_prefix", e.target.value)}
+                    placeholder="e.g. Area starts from"
+                    className="w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-green-500/20 focus:border-green-600 outline-none transition text-sm bg-gray-50/50"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-2">Area Badge (Highlighted Value)</label>
+                  <input
+                    type="text"
+                    value={contents.area_starts_value ?? ""}
+                    onChange={(e) => handleChange("area_starts_value", e.target.value)}
+                    placeholder="e.g. 1250 sq yard"
+                    className="w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-green-500/20 focus:border-green-600 outline-none transition text-sm bg-gray-50/50"
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
@@ -241,19 +278,25 @@ export default function HomeContentPage() {
             </div>
             
             <div className="text-center py-4">
+              {/* Urgency Badge Preview */}
+              {contents.urgency_badge !== "false" && contents.urgency_badge !== "none" && (
+                <div className="inline-block bg-red-600 text-white px-2.5 py-0.5 rounded-full text-[10px] font-bold mb-2 animate-pulse">
+                  {contents.urgency_badge?.trim() ? contents.urgency_badge : "Hurry Price Revising Soon"}
+                </div>
+              )}
+
               <h1 className="text-lg md:text-xl font-bold font-serif leading-tight mb-2 text-white">
                 {contents.hero_title || "Own Your Dream Farmhouse in the Heart of"}
                 <span className="text-amber-400"> {contents.hero_title_highlight || "Aravali Hills"}</span>
               </h1>
-              <p className="text-xs text-slate-400 max-w-xs mx-auto mb-6">
+              <p className="text-xs text-slate-400 max-w-xs mx-auto mb-4">
                 {contents.hero_subtitle || "2 Hrs Drive from Delhi NCR in Khairthal, Alwar"}
               </p>
 
               {/* Pills render list */}
-              <div className="flex justify-center flex-wrap gap-2 max-w-md mx-auto">
+              <div className="flex justify-center flex-wrap gap-2 max-w-md mx-auto mb-4">
                 {PILL_INFO.map((pill) => {
                   const val = contents[pill.key];
-                  // If pill has no value entered by admin, don't show it
                   if (!val || !val.trim()) return null;
 
                   return (
@@ -266,6 +309,18 @@ export default function HomeContentPage() {
                   );
                 })}
               </div>
+
+              {/* Area Badge Preview */}
+              {(contents.area_starts_prefix !== "" || contents.area_starts_value !== "") && (
+                <div className="bg-white/10 backdrop-blur-sm inline-block px-3 py-1 rounded-full border border-white/10 mt-2">
+                  <p className="text-[11px] text-white/90">
+                    {contents.area_starts_prefix || "Area starts from"}{" "}
+                    <span className="text-amber-300 font-bold text-xs">
+                      {contents.area_starts_value || "1250 sq yard"}
+                    </span>
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 

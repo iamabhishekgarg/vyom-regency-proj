@@ -40,6 +40,9 @@ INSERT INTO site_content (page, section, content) VALUES
   ('home', 'hero_title_highlight', 'Aravali Hills'),
   ('home', 'hero_subtitle', '2 Hrs Drive from Delhi NCR in Khairthal, Alwar'),
   ('home', 'hero_description', 'Premium Farmhouse Plots | Registry Available | Gated Community | High Investment Growth'),
+  ('home', 'urgency_badge', 'Hurry Price Revising Soon'),
+  ('home', 'area_starts_prefix', 'Area starts from'),
+  ('home', 'area_starts_value', '1250 sq yard'),
   ('home', 'benefits_title', 'Why Choose Vyom Regency?')
 ON CONFLICT (page, section) DO NOTHING;
 

@@ -132,9 +132,11 @@ export default function Hero({
       {/* Text + CTA layer — stays fixed on screen, unaffected by the slider */}
       <div className="container mx-auto px-4 text-center text-white max-w-4xl z-10 relative">
         {/* Urgency Badge */}
-        <div className="inline-block bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold mb-2 md:mb-3 animate-pulse">
-          Hurry Price Revising Soon
-        </div>
+        {content.urgency_badge !== "false" && content.urgency_badge !== "none" && (
+          <div className="inline-block bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold mb-2 md:mb-3 animate-pulse">
+            {content.urgency_badge?.trim() ? content.urgency_badge : "Hurry Price Revising Soon"}
+          </div>
+        )}
 
         <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold font-serif leading-tight mb-2 md:mb-3">
           {content.hero_title || "Own Your Dream Farmhouse in the Heart of"}
@@ -196,13 +198,17 @@ export default function Hero({
             })}
         </div>
 
-        {/* Price Indicator */}
-        <div className="mt-3 md:mt-4 bg-white/10 backdrop-blur-sm inline-block px-4 py-1.5 sm:px-5 sm:py-2 rounded-full border border-white/10">
-          <p className="text-xs sm:text-sm">
-            Area starts from {" "}
-            <span className="text-amber-300 font-bold text-sm sm:text-base md:text-lg">1250 sq yard</span>{" "}
-          </p>
-        </div>
+        {/* Price / Area Indicator */}
+        {(content.area_starts_prefix !== "" || content.area_starts_value !== "") && (
+          <div className="mt-3 md:mt-4 bg-white/10 backdrop-blur-sm inline-block px-4 py-1.5 sm:px-5 sm:py-2 rounded-full border border-white/10">
+            <p className="text-xs sm:text-sm">
+              {content.area_starts_prefix || "Area starts from"}{" "}
+              <span className="text-amber-300 font-bold text-sm sm:text-base md:text-lg">
+                {content.area_starts_value || "1250 sq yard"}
+              </span>{" "}
+            </p>
+          </div>
+        )}
       </div>
     </section>
   );
