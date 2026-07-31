@@ -132,22 +132,33 @@ export default function Hero({
       {/* Text + CTA layer — stays fixed on screen, unaffected by the slider */}
       <div className="container mx-auto px-4 text-center text-white max-w-4xl z-10 relative">
         {/* Urgency Badge */}
-        {content.urgency_badge !== "false" && content.urgency_badge !== "none" && (
+        {Boolean(content.urgency_badge && content.urgency_badge.trim()) && (
           <div className="inline-block bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold mb-2 md:mb-3 animate-pulse">
-            {content.urgency_badge?.trim() ? content.urgency_badge : "Hurry Price Revising Soon"}
+            {content.urgency_badge.trim()}
           </div>
         )}
 
-        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold font-serif leading-tight mb-2 md:mb-3">
-          {content.hero_title || "Own Your Dream Farmhouse in the Heart of"}
-          <span className="text-amber-400"> {content.hero_title_highlight || "Aravali Hills"}</span>
-        </h1>
-        <h2 className="text-sm sm:text-base md:text-xl lg:text-2xl font-semibold leading-snug mb-2 md:mb-3 text-white/90">
-          {content.hero_subtitle || "2 Hrs Drive from Delhi NCR in Khairthal, Alwar"}
-        </h2>
-        <p className="text-xs sm:text-sm md:text-base mb-3 md:mb-4 max-w-xl mx-auto text-white/80">
-          {content.hero_description || "Premium Farmhouse Plots | Registry Available | Gated Community | High Investment Growth"}
-        </p>
+        {(Boolean(content.hero_title && content.hero_title.trim()) ||
+          Boolean(content.hero_title_highlight && content.hero_title_highlight.trim())) && (
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold font-serif leading-tight mb-2 md:mb-3">
+            {content.hero_title || ""}
+            {content.hero_title_highlight && content.hero_title_highlight.trim() && (
+              <span className="text-amber-400"> {content.hero_title_highlight.trim()}</span>
+            )}
+          </h1>
+        )}
+
+        {Boolean(content.hero_subtitle && content.hero_subtitle.trim()) && (
+          <h2 className="text-sm sm:text-base md:text-xl lg:text-2xl font-semibold leading-snug mb-2 md:mb-3 text-white/90">
+            {content.hero_subtitle.trim()}
+          </h2>
+        )}
+
+        {Boolean(content.hero_description && content.hero_description.trim()) && (
+          <p className="text-xs sm:text-sm md:text-base mb-3 md:mb-4 max-w-xl mx-auto text-white/80">
+            {content.hero_description.trim()}
+          </p>
+        )}
 
         {/* CTA Buttons */}
         <div className="flex items-start gap-2.5 sm:gap-3 justify-center flex-wrap">
@@ -199,13 +210,16 @@ export default function Hero({
         </div>
 
         {/* Price / Area Indicator */}
-        {(content.area_starts_prefix !== "" || content.area_starts_value !== "") && (
+        {(Boolean(content.area_starts_prefix && content.area_starts_prefix.trim()) ||
+          Boolean(content.area_starts_value && content.area_starts_value.trim())) && (
           <div className="mt-3 md:mt-4 bg-white/10 backdrop-blur-sm inline-block px-4 py-1.5 sm:px-5 sm:py-2 rounded-full border border-white/10">
             <p className="text-xs sm:text-sm">
-              {content.area_starts_prefix || "Area starts from"}{" "}
-              <span className="text-amber-300 font-bold text-sm sm:text-base md:text-lg">
-                {content.area_starts_value || "1250 sq yard"}
-              </span>{" "}
+              {content.area_starts_prefix && content.area_starts_prefix.trim() ? `${content.area_starts_prefix.trim()} ` : ""}
+              {content.area_starts_value && content.area_starts_value.trim() && (
+                <span className="text-amber-300 font-bold text-sm sm:text-base md:text-lg">
+                  {content.area_starts_value.trim()}
+                </span>
+              )}
             </p>
           </div>
         )}

@@ -279,19 +279,27 @@ export default function HomeContentPage() {
             
             <div className="text-center py-4">
               {/* Urgency Badge Preview */}
-              {contents.urgency_badge !== "false" && contents.urgency_badge !== "none" && (
+              {Boolean(contents.urgency_badge && contents.urgency_badge.trim()) && (
                 <div className="inline-block bg-red-600 text-white px-2.5 py-0.5 rounded-full text-[10px] font-bold mb-2 animate-pulse">
-                  {contents.urgency_badge?.trim() ? contents.urgency_badge : "Hurry Price Revising Soon"}
+                  {contents.urgency_badge.trim()}
                 </div>
               )}
 
-              <h1 className="text-lg md:text-xl font-bold font-serif leading-tight mb-2 text-white">
-                {contents.hero_title || "Own Your Dream Farmhouse in the Heart of"}
-                <span className="text-amber-400"> {contents.hero_title_highlight || "Aravali Hills"}</span>
-              </h1>
-              <p className="text-xs text-slate-400 max-w-xs mx-auto mb-4">
-                {contents.hero_subtitle || "2 Hrs Drive from Delhi NCR in Khairthal, Alwar"}
-              </p>
+              {(Boolean(contents.hero_title && contents.hero_title.trim()) ||
+                Boolean(contents.hero_title_highlight && contents.hero_title_highlight.trim())) && (
+                <h1 className="text-lg md:text-xl font-bold font-serif leading-tight mb-2 text-white">
+                  {contents.hero_title || ""}
+                  {contents.hero_title_highlight && contents.hero_title_highlight.trim() && (
+                    <span className="text-amber-400"> {contents.hero_title_highlight.trim()}</span>
+                  )}
+                </h1>
+              )}
+
+              {Boolean(contents.hero_subtitle && contents.hero_subtitle.trim()) && (
+                <p className="text-xs text-slate-400 max-w-xs mx-auto mb-4">
+                  {contents.hero_subtitle.trim()}
+                </p>
+              )}
 
               {/* Pills render list */}
               <div className="flex justify-center flex-wrap gap-2 max-w-md mx-auto mb-4">
@@ -311,13 +319,16 @@ export default function HomeContentPage() {
               </div>
 
               {/* Area Badge Preview */}
-              {(contents.area_starts_prefix !== "" || contents.area_starts_value !== "") && (
+              {(Boolean(contents.area_starts_prefix && contents.area_starts_prefix.trim()) ||
+                Boolean(contents.area_starts_value && contents.area_starts_value.trim())) && (
                 <div className="bg-white/10 backdrop-blur-sm inline-block px-3 py-1 rounded-full border border-white/10 mt-2">
                   <p className="text-[11px] text-white/90">
-                    {contents.area_starts_prefix || "Area starts from"}{" "}
-                    <span className="text-amber-300 font-bold text-xs">
-                      {contents.area_starts_value || "1250 sq yard"}
-                    </span>
+                    {contents.area_starts_prefix && contents.area_starts_prefix.trim() ? `${contents.area_starts_prefix.trim()} ` : ""}
+                    {contents.area_starts_value && contents.area_starts_value.trim() && (
+                      <span className="text-amber-300 font-bold text-xs">
+                        {contents.area_starts_value.trim()}
+                      </span>
+                    )}
                   </p>
                 </div>
               )}
